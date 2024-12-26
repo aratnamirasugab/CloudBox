@@ -41,9 +41,9 @@ var dotenv = __importStar(require("dotenv"));
 dotenv.config();
 var dbName = process.env.DB_NAME || 'mantaradrivedb';
 var dbUser = process.env.DB_USER || 'postgres';
-var dbPassword = process.env.DB_PASSWORD || 'postsgres';
+var dbPassword = process.env.DB_PASSWORD || '';
 var dbHost = process.env.DB_HOST || 'localhost';
-var db = new sequelize_1.default.Sequelize(dbName, dbUser, dbPassword, {
+var db = new sequelize_1.default.Sequelize(dbName, dbUser, '', {
     host: dbHost,
     dialect: 'postgres',
 });

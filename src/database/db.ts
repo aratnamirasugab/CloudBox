@@ -1,14 +1,20 @@
-import sequelize from 'sequelize';
+import { Sequelize } from 'sequelize';
 import * as dotenv from 'dotenv';
+
+import { initializeFileTable } from './model/File';
+import { initializeFolderTable } from './model/Folder';
+import { initializeUserTable } from './model/User';
+import { initializeUploadChunkTable } from './model/UploadChunk';
+import { initializeUploadSessionTable } from './model/UploadSession';
 
 dotenv.config();
 
 const dbName = process.env.DB_NAME || 'mantaradrivedb';
 const dbUser = process.env.DB_USER || 'postgres';
-const dbPassword = process.env.DB_PASSWORD || 'postsgres';
+const dbPassword = process.env.DB_PASSWORD || 'dev_password';
 const dbHost = process.env.DB_HOST || 'localhost';
 
-const db = new sequelize.Sequelize(
+const db = new Sequelize(
     dbName,
     dbUser,
     dbPassword,
@@ -21,7 +27,13 @@ const db = new sequelize.Sequelize(
 db.authenticate().then(() => {
     console.log('Connection has been established successfully.');
 }).catch((error) => {
-    console.error('Unable to connect to the database:', error);
+    console.error('Unable to connect to the database: ', error);
 });
+
+initializeFileTable(db);
+initializeUploadChunkTable(db);
+initializeUserTable(db);
+initializeUploadSessionTable(db);
+initializeFolderTable(db);
 
 export default db;
