@@ -1,11 +1,17 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 import UserService from '../service/UserService';
+
+import * as dotenv from 'dotenv';
+import verifyToken from "../middleware/token";
 
 const router = express.Router();
 const userService = new UserService();
 
-router.post('/user/create', async (
+dotenv.config();
+
+router.post('/user/register', async (
         req,
         res) => {
     const { email, password } = req.body;
@@ -28,10 +34,41 @@ router.post('/user/create', async (
     }
 
     const user = await userService.createUser(email, hashedPassword);
-    res.json(user);
+    res.status(200).json(user);
 });
 
-router.get('/user/:id', async(
+router.post('/user/login', async (
+        req,
+        res) => {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+        res.status(400).json({ error: 'email and password are required' });
+        return;
+    }
+
+    const user = await userService.getUserByEmail(email);
+    if (!user) {
+        res.status(400).json({ error: 'user not found' });
+        return;
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+        res.status(400).json({ error: 'invalid password' });
+        return;
+    }
+
+    // generate JWT
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET as string, { expiresIn: '1h' });
+
+    res.status(200).json({
+        'message': 'login successful, token is valid for 1 hour',
+        'token': token
+    });
+});
+
+router.get('/user/:id', verifyToken, async(
     req,
     res) => {
     const id = parseInt(req.params.id);
@@ -42,10 +79,10 @@ router.get('/user/:id', async(
     }
 
     const user = await userService.getUserById(id);
-    res.json(user);
+    res.status(200).json(user);
 });
 
-router.get('/user/email/:email', async(
+router.get('/user/email/:email', verifyToken, async(
     req,
     res) => {
     const email = req.params.email;
@@ -56,10 +93,10 @@ router.get('/user/email/:email', async(
     }
 
     const user = await userService.getUserByEmail(email);
-    res.json(user);
+    res.status(200).json(user);
 });
 
-router.patch('/user/:id', async(
+router.patch('/user/:id', verifyToken, async(
     req,
     res) => {
     const id = parseInt(req.params.id);
@@ -76,12 +113,24 @@ router.patch('/user/:id', async(
         return;
     }
 
-    // TODO : validate password and hash before saving to db.
-    const user = await userService.updateUserPasswordById(id, password);
+    const existingUser = await userService.getUserById(id);
+    if (!existingUser) {
+        res.status(400).json({ error: 'user not found' });
+        return;
+    }
+
+    const isPasswordValid = await bcrypt.compare(old_password, existingUser.password);
+    if (!isPasswordValid) {
+        res.status(400).json({ error: 'invalid old password' });
+        return;
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = await userService.updateUserPasswordById(id, hashedPassword);
     res.json(user);
 });
 
-router.delete('/user/:id', async(
+router.delete('/user/:id', verifyToken, async(
     req,
     res) => {
     const id = parseInt(req.params.id);
