@@ -21,9 +21,8 @@ class UserService {
         });
     }
 
-    async updateUserById(id: number, email: string, password: string) {
+    async updateUserPasswordById(id: number, password: string) {
         return await User.update({
-            email,
             password
         }, {
             where: {
@@ -42,3 +41,5 @@ class UserService {
         });
     }
 }
+
+export default UserService;

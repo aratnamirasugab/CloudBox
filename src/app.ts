@@ -3,9 +3,11 @@ import cors from 'cors';
 import * as dotenv from 'dotenv';
 import helmet from 'helmet';
 
-import FileRoutes from './routes/FileRoutes';
-
 import db from './database/db';
+
+import FileRoutes from './routes/FileRoutes';
+import FolderRoutes from "./routes/FolderRoutes";
+import UserRoutes from "./routes/UserRoutes";
 
 dotenv.config()
 
@@ -23,7 +25,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
 
-app.use('/api', FileRoutes);
+app.use('/api', FileRoutes, FolderRoutes, UserRoutes);
 
 app.listen(PORT, () => {
     console.log(`Listening on port ${PORT}`);
