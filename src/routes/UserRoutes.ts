@@ -6,41 +6,25 @@ import UserService from '../service/UserService';
 import * as dotenv from 'dotenv';
 import verifyToken from "../middleware/token";
 import ResponseHandler from "../utils/ResponseHandler";
+import Validator from "../middleware/validator";
+import {CreateUserDTO} from "../database/model/User";
 
 const router = express.Router();
 const userService = new UserService();
 
 dotenv.config();
 
-router.post('/user/register', async (
-        req,
-        res) => {
-    const { email, password } = req.body;
+router.post('/user/register',
+    Validator.classValidator(CreateUserDTO),
+    async (req, res) => {
 
-    if (!email || !password) {
-        res.status(400).json({ error: 'email and password are required' });
-        return;
+    try {
+        const userDTO: CreateUserDTO = req.body;
+        await userService.registerNewUser(userDTO);
+        return ResponseHandler.success(res);
+    } catch (error) {
+        return ResponseHandler.error(res, undefined, undefined, error.toString());
     }
-
-    const existingUser = await userService.getUserByEmail(email);
-    if (existingUser) {
-        console.warn('User is not found : ' + email);
-        return ResponseHandler.error(res);
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-    if (!hashedPassword) {
-        console.error('Failed during hashing password');
-        return ResponseHandler.error(res);
-    }
-
-    const user = await userService.createUser(email, hashedPassword);
-    if (!user) {
-        console.error('Failed to create user');
-        return ResponseHandler.error(res);
-    }
-    
-    return ResponseHandler.success(res, 'Successfully registered the user');
 });
 
 router.post('/user/login', async (

@@ -1,4 +1,5 @@
 import {DataTypes, Model, Optional, Sequelize} from "sequelize";
+import {IsEmail, IsString} from "class-validator";
 
 interface UserAttributes {
     id: number;
@@ -10,7 +11,7 @@ interface UserAttributes {
 
 interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
 
-class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
+export class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
     createdAt: Date;
     email: string;
     id: number;
@@ -48,4 +49,11 @@ export function initializeUserTable(db : Sequelize) {
     User.initialize(db);
 }
 
-export default User;
+export class CreateUserDTO {
+    @IsString
+    @IsEmail
+    email: string;
+
+    @IsString()
+    password: string;
+}

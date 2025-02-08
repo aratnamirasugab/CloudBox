@@ -38,10 +38,4 @@ initializeUserTable(db);
 initializeUploadSessionTable(db);
 initializeFolderTable(db);
 
-db.sync({ force: false }).then(() => {
-    console.log('Database & tables created!');
-}).catch((error) => {
-    console.error('Error creating database tables: ', error);
-});
-
 export default db;
