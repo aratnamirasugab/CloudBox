@@ -5,6 +5,7 @@ import UserService from '../service/UserService';
 
 import * as dotenv from 'dotenv';
 import verifyToken from "../middleware/token";
+import ResponseHandler from "../utils/ResponseHandler";
 
 const router = express.Router();
 const userService = new UserService();
@@ -34,7 +35,12 @@ router.post('/user/register', async (
     }
 
     const user = await userService.createUser(email, hashedPassword);
-    res.status(200).json(user);
+    if (!user) {
+        console.error('Failed to create user');
+        return ResponseHandler.error(res);
+    }
+    
+    return ResponseHandler.success(res, 'Successfully registered the user');
 });
 
 router.post('/user/login', async (
@@ -43,20 +49,18 @@ router.post('/user/login', async (
     const { email, password } = req.body;
 
     if (!email || !password) {
-        res.status(400).json({ error: 'email and password are required' });
-        return;
+        return ResponseHandler.error(res, null, null, 'email and password are required.');
     }
 
     const user = await userService.getUserByEmail(email);
     if (!user) {
-        res.status(400).json({ error: 'user not found' });
-        return;
+        console.warn('User not found : ' + email);
+        return ResponseHandler.error(res);
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-        res.status(400).json({ error: 'invalid password' });
-        return;
+        return ResponseHandler.error(res);
     }
 
     const token = jwt.sign({
@@ -64,11 +68,13 @@ router.post('/user/login', async (
     }, process.env.JWT_SECRET as string, {
         expiresIn: '1h'
     });
+    
+    if (!token) {
+        console.error('Failed to generate token for : ' + email);
+        return ResponseHandler.error(res);
+    }
 
-    res.status(200).json({
-        'message': 'login successful, token is valid for 1 hour',
-        'token': token
-    });
+    return ResponseHandler.success(res, token);
 });
 
 router.get('/user/:id', verifyToken, async(

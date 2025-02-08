@@ -41,3 +41,5 @@ class ResponseHandler {
         });
     };
 }
+
+export default ResponseHandler;
