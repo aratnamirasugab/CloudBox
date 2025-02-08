@@ -40,6 +40,10 @@ var express_1 = __importDefault(require("express"));
 var cors_1 = __importDefault(require("cors"));
 var dotenv = __importStar(require("dotenv"));
 var helmet_1 = __importDefault(require("helmet"));
+var db_1 = __importDefault(require("./database/db"));
+var FileRoutes_1 = __importDefault(require("./routes/FileRoutes"));
+var FolderRoutes_1 = __importDefault(require("./routes/FolderRoutes"));
+var UserRoutes_1 = __importDefault(require("./routes/UserRoutes"));
 dotenv.config();
 if (!process.env.PORT) {
     console.error('Error to get ports');
@@ -51,7 +55,10 @@ app.use((0, helmet_1.default)());
 app.use(express_1.default.urlencoded({ extended: true }));
 app.use(express_1.default.json());
 app.use((0, cors_1.default)());
-app.listen(PORT, function () {
-    console.log("Listening on port ".concat(PORT));
+app.use('/api', FileRoutes_1.default, FolderRoutes_1.default, UserRoutes_1.default);
+db_1.default.sync().then(function () {
+    app.listen(PORT, function () {
+        console.log("Listening on port ".concat(PORT));
+    });
 });
 //# sourceMappingURL=app.js.map

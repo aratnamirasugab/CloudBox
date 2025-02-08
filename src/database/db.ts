@@ -6,6 +6,7 @@ import { initializeFolderTable } from './model/Folder';
 import { initializeUserTable } from './model/User';
 import { initializeUploadChunkTable } from './model/UploadChunk';
 import { initializeUploadSessionTable } from './model/UploadSession';
+import {logger} from "sequelize/types/utils/logger";
 
 dotenv.config();
 
@@ -21,7 +22,8 @@ const db = new Sequelize(
     {
         host: dbHost,
         dialect: 'postgres',
-    }
+        logging: false
+    },
 );
 
 db.authenticate().then(() => {

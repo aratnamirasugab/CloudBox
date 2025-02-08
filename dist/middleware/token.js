@@ -32,37 +32,27 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-var sequelize_1 = require("sequelize");
+var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var dotenv = __importStar(require("dotenv"));
-var File_1 = require("./model/File");
-var Folder_1 = require("./model/Folder");
-var User_1 = require("./model/User");
-var UploadChunk_1 = require("./model/UploadChunk");
-var UploadSession_1 = require("./model/UploadSession");
 dotenv.config();
-var dbName = process.env.DB_NAME || 'mantaradrivedb';
-var dbUser = process.env.DB_USER || 'postgres';
-var dbPassword = process.env.DB_PASSWORD || 'dev_password';
-var dbHost = process.env.DB_HOST || 'localhost';
-var db = new sequelize_1.Sequelize(dbName, dbUser, dbPassword, {
-    host: dbHost,
-    dialect: 'postgres',
-});
-db.authenticate().then(function () {
-    console.log('Connection has been established successfully.');
-}).catch(function (error) {
-    console.error('Unable to connect to the database: ', error);
-});
-(0, File_1.initializeFileTable)(db);
-(0, UploadChunk_1.initializeUploadChunkTable)(db);
-(0, User_1.initializeUserTable)(db);
-(0, UploadSession_1.initializeUploadSessionTable)(db);
-(0, Folder_1.initializeFolderTable)(db);
-db.sync({ force: false }).then(function () {
-    console.log('Database & tables created!');
-}).catch(function (error) {
-    console.error('Error creating database tables: ', error);
-});
-exports.default = db;
-//# sourceMappingURL=db.js.map
+var verifyToken = function (req, res, next) {
+    var token = req.headers['authorization'];
+    if (!token) {
+        res.status(403).json({ error: 'A token is required for authentication' });
+        return;
+    }
+    jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET, function (err, decoded) {
+        if (err) {
+            res.status(401).json({ error: 'Invalid Token' });
+            return;
+        }
+        req.body.verify.userId = decoded.id;
+        next();
+    });
+};
+exports.default = verifyToken;
+//# sourceMappingURL=token.js.map

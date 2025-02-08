@@ -23,14 +23,14 @@ router.post('/user/register', async (
 
     const existingUser = await userService.getUserByEmail(email);
     if (existingUser) {
-        res.status(400).json({ error: 'email already exists' });
-        return;
+        console.warn('User is not found : ' + email);
+        return ResponseHandler.error(res);
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
     if (!hashedPassword) {
-        res.status(500).json({ error: 'failed to hash password' });
-        return
+        console.error('Failed during hashing password');
+        return ResponseHandler.error(res);
     }
 
     const user = await userService.createUser(email, hashedPassword);
@@ -59,8 +59,11 @@ router.post('/user/login', async (
         return;
     }
 
-    // generate JWT
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET as string, { expiresIn: '1h' });
+    const token = jwt.sign({
+        id: user.id
+    }, process.env.JWT_SECRET as string, {
+        expiresIn: '1h'
+    });
 
     res.status(200).json({
         'message': 'login successful, token is valid for 1 hour',

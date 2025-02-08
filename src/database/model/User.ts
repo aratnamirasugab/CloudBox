@@ -11,11 +11,11 @@ interface UserAttributes {
 interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
 
 class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
-    createdAt!: Date;
-    email!: string;
-    id!: number;
-    isDeleted!: boolean;
-    password!: string;
+    createdAt: Date;
+    email: string;
+    id: number;
+    isDeleted: boolean;
+    password: string;
 
     public static initialize(sequelize: Sequelize) {
         User.init({
@@ -26,20 +26,16 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
             },
             email: {
                 type: DataTypes.STRING,
-                allowNull: false,
                 unique: true
             },
             password: {
-                type: DataTypes.STRING,
-                allowNull: false
+                type: DataTypes.STRING
             },
             createdAt: {
-                type: DataTypes.INTEGER,
-                allowNull: false
+                type: DataTypes.DATE
             },
             isDeleted: {
-                type: DataTypes.BOOLEAN,
-                allowNull: false
+                type: DataTypes.BOOLEAN
             }
         }, {
             sequelize,

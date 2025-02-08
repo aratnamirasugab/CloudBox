@@ -19,7 +19,6 @@ if (!process.env.PORT) {
 const PORT = parseInt(process.env.PORT as string, 10);
 
 const app = express();
-
 app.use(helmet());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -27,6 +26,8 @@ app.use(cors());
 
 app.use('/api', FileRoutes, FolderRoutes, UserRoutes);
 
-app.listen(PORT, () => {
-    console.log(`Listening on port ${PORT}`);
-});
+db.sync().then(() => {
+    app.listen(PORT, () => {
+        console.log(`Listening on port ${PORT}`);
+    });
+})

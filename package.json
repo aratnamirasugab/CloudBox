@@ -5,7 +5,7 @@
   "scripts": {
     "build": "tsc",
     "start": "node ./dist/app.js",
-    "dev": "nodemon",
+    "dev": "npx nodemon --exec ts-node src/app.ts",
     "setup-db": "ts-node src/database/db.ts"
   },
   "keywords": [],
@@ -20,10 +20,10 @@
     "express": "^4.21.2",
     "helmet": "^8.0.0",
     "http-status-codes": "^2.3.0",
+    "jsonwebtoken": "^9.0.2",
     "nodemon": "^3.1.9",
     "pg": "^8.13.1",
     "pg-hstore": "^2.3.4",
-    "sequelize": "^6.37.5",
     "uuid": "^11.0.3"
   },
   "devDependencies": {
@@ -36,6 +36,7 @@
     "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^22.10.2",
     "@types/uuid": "^10.0.0",
+    "sequelize": "^6.37.5",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.2"
   }
