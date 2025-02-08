@@ -1,6 +1,5 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
 import UserService from '../service/UserService';
 
 import * as dotenv from 'dotenv';
@@ -27,38 +26,17 @@ router.post('/user/register',
     }
 });
 
-router.post('/user/login', async (
-        req,
-        res) => {
-    const { email, password } = req.body;
+router.post('/user/login',
+    Validator.classValidator(CreateUserDTO),
+    async (req, res) => {
 
-    if (!email || !password) {
-        return ResponseHandler.error(res, null, null, 'email and password are required.');
+    try {
+        const loginPayload: CreateUserDTO = req.body;
+        const token = await userService.loginUser(loginPayload);
+        return ResponseHandler.success(res, token);
+    } catch (error) {
+        return ResponseHandler.error(res, undefined, undefined, error.toString());
     }
-
-    const user = await userService.getUserByEmail(email);
-    if (!user) {
-        console.warn('User not found : ' + email);
-        return ResponseHandler.error(res);
-    }
-
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-        return ResponseHandler.error(res);
-    }
-
-    const token = jwt.sign({
-        id: user.id
-    }, process.env.JWT_SECRET as string, {
-        expiresIn: '1h'
-    });
-    
-    if (!token) {
-        console.error('Failed to generate token for : ' + email);
-        return ResponseHandler.error(res);
-    }
-
-    return ResponseHandler.success(res, token);
 });
 
 router.get('/user/:id', verifyToken, async(

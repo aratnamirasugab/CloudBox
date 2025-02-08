@@ -50,8 +50,8 @@ export function initializeUserTable(db : Sequelize) {
 }
 
 export class CreateUserDTO {
-    @IsString
-    @IsEmail
+    @IsString()
+    @IsEmail()
     email: string;
 
     @IsString()

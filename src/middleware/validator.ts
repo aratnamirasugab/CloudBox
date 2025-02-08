@@ -7,8 +7,8 @@ class Validator {
         return (req: Request, res: Response, next: NextFunction) => {
             const instance = plainToInstance(type, req.body);
             validate(instance).then((error) => {
-                if (error) {
-                    throw new Error('Unable to find instance');
+                if (error.length > 0) {
+                    throw new Error('Unable to validate instance : ' + error.toString());
                 } else {
                     req.body = instance;
                     next();
