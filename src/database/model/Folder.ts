@@ -1,4 +1,5 @@
 import {DataTypes, Model, Optional, Sequelize} from "sequelize";
+import {IsNotEmpty, IsNumber, IsString} from "class-validator";
 
 interface FolderAttributes {
     id: number;
@@ -39,7 +40,7 @@ class Folder extends Model<FolderAttributes, FolderCreationAttributes> implement
                 allowNull: false
             },
             createdAt: {
-                type: DataTypes.INTEGER,
+                type: DataTypes.DATE,
                 allowNull: false
             },
             isDeleted: {
@@ -55,6 +56,20 @@ class Folder extends Model<FolderAttributes, FolderCreationAttributes> implement
 
 export function initializeFolderTable(db : Sequelize) {
     Folder.initialize(db);
+}
+
+export class CreateFolderDTO {
+    @IsNumber()
+    @IsNotEmpty()
+    userId: number;
+
+    @IsString()
+    @IsNotEmpty()
+    name: string;
+
+    @IsNumber()
+    @IsNotEmpty()
+    parentFolderId: number;
 }
 
 export default Folder;

@@ -1,13 +1,12 @@
 import Folder from '../database/model/Folder';
 
 class FolderService {
-    async createFolder(name: string, userId: number) {
-        return await Folder.create({
-            name,
-            userId,
-            createdAt: new Date(),
-            isDeleted: false
-        });
+    
+    
+    
+    
+    async createFolder(createFolderPayload: Us) {
+        
     }
 
     async getFolderById(id: number) {
