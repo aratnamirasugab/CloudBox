@@ -13,7 +13,7 @@ interface FolderAttributes {
 interface FolderCreationAttributes extends Optional<FolderAttributes, 'id'> {}
 
 class Folder extends Model<FolderAttributes, FolderCreationAttributes> implements FolderAttributes {
-    public id!: number;
+    id!: number;
     createdAt!: Date;
     isDeleted!: boolean;
     name!: string;
@@ -41,11 +41,13 @@ class Folder extends Model<FolderAttributes, FolderCreationAttributes> implement
             },
             createdAt: {
                 type: DataTypes.DATE,
-                allowNull: false
+                allowNull: false,
+                defaultValue: new Date()
             },
             isDeleted: {
                 type: DataTypes.BOOLEAN,
-                allowNull: false
+                allowNull: false,
+                defaultValue: false
             }
         }, {
             sequelize,
@@ -59,10 +61,6 @@ export function initializeFolderTable(db : Sequelize) {
 }
 
 export class CreateFolderDTO {
-    @IsNumber()
-    @IsNotEmpty()
-    userId: number;
-
     @IsString()
     @IsNotEmpty()
     name: string;
@@ -70,6 +68,24 @@ export class CreateFolderDTO {
     @IsNumber()
     @IsNotEmpty()
     parentFolderId: number;
+}
+
+export class CreateFolderResponse {
+    private readonly parentFolderId: number;
+    private readonly folderId: number;
+
+    constructor(folder: Folder) {
+        this.parentFolderId = folder.parentFolderId;
+        this.folderId = folder.id;
+    }
+
+    public getParentFolderId(): number {
+        return this.parentFolderId;
+    }
+
+    public getFolderId(): number {
+        return this.folderId;
+    }
 }
 
 export default Folder;

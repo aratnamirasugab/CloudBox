@@ -1,6 +1,7 @@
-import { Request, Response, NextFunction } from 'express';
+import {NextFunction, Request, Response} from 'express';
 import jwt from 'jsonwebtoken';
 import * as dotenv from 'dotenv';
+import Authentication from "../model/Authentication";
 
 dotenv.config();
 
@@ -17,7 +18,7 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
             return;
         }
 
-        req.body.verify.userId = decoded.id;
+        req.body.verify = new Authentication(decoded.id, undefined);
         next();
     });
 }

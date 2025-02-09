@@ -7,17 +7,19 @@ class UserService {
     async registerNewUser(userPayload : CreateUserDTO) {
         const existingUser = await this.getUserByEmail(userPayload.email);
         if (existingUser) {
-            throw new Error('user already exists : ' + this.getUserByEmail);
+            throw new Error('user already exists, please use another email');
         }
 
         const hashedPassword = await bcrypt.hash(userPayload.password, 10);
         if (!hashedPassword) {
-            throw new Error('failed to hash password for user : ' + userPayload.email);
+            console.error('Failed to hash password : ' + userPayload.email);
+            throw new Error();
         }
 
         const user = this.createUser(userPayload.email, hashedPassword);
         if (!user) {
-            throw new Error('failed to create user');
+            console.error('Failed to create user : ' + userPayload.email);
+            throw new Error();
         }
 
         return user;

@@ -1,12 +1,14 @@
-import Folder from '../database/model/Folder';
+import Folder, {CreateFolderDTO} from '../database/model/Folder';
 
 class FolderService {
-    
-    
-    
-    
-    async createFolder(createFolderPayload: Us) {
-        
+
+    async createFolder(createFolderPayload: CreateFolderDTO, userId: number) {
+        return await Folder.create({
+            parentFolderId: createFolderPayload.parentFolderId,
+            name: createFolderPayload.name,
+            userId: userId,
+            createdAt: new Date()
+        });
     }
 
     async getFolderById(id: number) {

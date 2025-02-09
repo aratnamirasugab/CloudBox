@@ -8,7 +8,8 @@ class Validator {
             const instance = plainToInstance(type, req.body);
             validate(instance).then((error) => {
                 if (error.length > 0) {
-                    throw new Error('Unable to validate instance : ' + error.toString());
+                    console.warn(`Unable to validate instance: ${type} . payload: ${JSON.stringify(req.body)}`);
+                    throw new Error();
                 } else {
                     req.body = instance;
                     next();
