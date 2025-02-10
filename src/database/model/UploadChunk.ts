@@ -1,22 +1,25 @@
 import {DataTypes, Model, Optional, Sequelize} from "sequelize";
+import {IsNotEmpty, IsNumber, IsString} from "class-validator";
 
 interface UploadChunkAttributes {
     id: number;
     fileId: number;
     chunkIndex: number;
     size: number;
+    eTag: string;
     isUploaded: boolean;
     uploadedAt: Date;
 }
 
 interface UploadChunkCreationAttributes extends Optional<UploadChunkAttributes, 'id'> {}
 
-class UploadChunk extends Model<UploadChunkAttributes, UploadChunkCreationAttributes> implements UploadChunkAttributes {
+export class UploadChunk extends Model<UploadChunkAttributes, UploadChunkCreationAttributes> implements UploadChunkAttributes {
     chunkIndex!: number;
     fileId!: number;
     id!: number;
     isUploaded!: boolean;
     size!: number;
+    eTag!: string;
     uploadedAt!: Date;
 
     public static initialize(sequelize : Sequelize) {
@@ -115,4 +118,16 @@ export class CreateUploadChunk {
     }
 }
 
-export default UploadChunk;
+export class CompleteUploadChunkDTO {
+    @IsNotEmpty()
+    @IsNumber()
+    private _chunkIndex: number;
+
+    @IsNotEmpty()
+    @IsNumber()
+    private _fileId: number;
+
+    @IsNotEmpty()
+    @IsString()
+    private _etag: string;
+}

@@ -1,8 +1,7 @@
 import {File, FileUploadingInitialization} from '../model/File';
 import {S3Client} from "../../utils/s3Client";
-import {CreateMultipartUploadOutput, CreateMultipartUploadRequest} from "aws-sdk/clients/s3";
-import {AWSError, S3} from "aws-sdk";
-import {Request} from "aws-sdk/lib/request";
+import {CreateMultipartUploadRequest} from "aws-sdk/clients/s3";
+import {S3} from "aws-sdk";
 
 const s3Client = new S3Client().initializeS3();
 

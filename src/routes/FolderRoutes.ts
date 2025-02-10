@@ -1,5 +1,4 @@
 import express from 'express';
-import FolderService from '../service/FolderService';
 import Validator from "../middleware/validator";
 import Folder, {CreateFolderDTO, CreateFolderResponse} from "../database/model/Folder";
 import ResponseHandler from "../utils/ResponseHandler";

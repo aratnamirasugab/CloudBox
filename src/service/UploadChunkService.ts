@@ -1,4 +1,11 @@
-class UploadChunkService {
-}
+export class UploadChunkService {
 
-export default UploadChunkService;
+    async patchChunkDetail() {
+
+
+
+
+
+    }
+
+}

@@ -1,12 +1,11 @@
-import { Sequelize } from 'sequelize';
+import {Sequelize} from 'sequelize';
 import * as dotenv from 'dotenv';
 
-import { initializeFileTable } from './model/File';
-import { initializeFolderTable } from './model/Folder';
-import { initializeUserTable } from './model/User';
-import { initializeUploadChunkTable } from './model/UploadChunk';
-import { initializeUploadSessionTable } from './model/UploadSession';
-import {logger} from "sequelize/types/utils/logger";
+import {initializeFileTable} from './model/File';
+import {initializeFolderTable} from './model/Folder';
+import {initializeUserTable} from './model/User';
+import {initializeUploadChunkTable} from './model/UploadChunk';
+import {initializeUploadSessionTable} from './model/UploadSession';
 
 dotenv.config();
 

@@ -1,4 +1,4 @@
-import { DataTypes, Sequelize, Model, Optional } from 'sequelize';
+import {DataTypes, Model, Optional, Sequelize} from 'sequelize';
 import {IsNotEmpty, IsNumber, IsString} from "class-validator";
 import {Status} from "../../model/enum/Status";
 
