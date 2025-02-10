@@ -60,13 +60,58 @@ export function initializeUploadChunkTable(db : Sequelize) {
 }
 
 export class CreateUploadChunk {
-    private fileId: number;
-    private chunkIndex: number;
-    private size: number;
-    private isUploaded: boolean;
-    private uploadedAt: Date
+    private _fileId: number;
+    private _chunkIndex: number;
+    private _size: number;
+    private _isUploaded: boolean;
+    private _uploadedAt: Date
     
-    constructor(fileId: number, chunkIndex:n) {
+    constructor(fileId: number, chunkIndex: number, size: number) {
+        this._fileId = fileId;
+        this._chunkIndex = chunkIndex;
+        this._size = size;
+        this._isUploaded = false;
+        this._uploadedAt = new Date();
+    }
+
+    get fileId(): number {
+        return this._fileId;
+    }
+
+    set fileId(value: number) {
+        this._fileId = value;
+    }
+
+    get chunkIndex(): number {
+        return this._chunkIndex;
+    }
+
+    set chunkIndex(value: number) {
+        this._chunkIndex = value;
+    }
+
+    get size(): number {
+        return this._size;
+    }
+
+    set size(value: number) {
+        this._size = value;
+    }
+
+    get isUploaded(): boolean {
+        return this._isUploaded;
+    }
+
+    set isUploaded(value: boolean) {
+        this._isUploaded = value;
+    }
+
+    get uploadedAt(): Date {
+        return this._uploadedAt;
+    }
+
+    set uploadedAt(value: Date) {
+        this._uploadedAt = value;
     }
 }
 
