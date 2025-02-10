@@ -5,18 +5,20 @@ interface UserAttributes {
     id: number;
     email: string;
     password: string;
-    createdAt: Date;
     isDeleted: boolean;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
 
 export class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
-    createdAt: Date;
-    email: string;
     id: number;
-    isDeleted: boolean;
+    email: string;
     password: string;
+    isDeleted: boolean;
+    createdAt: Date;
+    updatedAt: Date;
 
     public static initialize(sequelize: Sequelize) {
         User.init({
@@ -36,7 +38,12 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
                 type: DataTypes.DATE
             },
             isDeleted: {
-                type: DataTypes.BOOLEAN
+                type: DataTypes.BOOLEAN,
+                defaultValue: false
+            },
+            updatedAt: {
+                type: DataTypes.DATE,
+                defaultValue: undefined
             }
         }, {
             sequelize,
@@ -56,4 +63,60 @@ export class CreateUserDTO {
 
     @IsString()
     password: string;
+}
+
+export class UserCreation {
+    private _email: string;
+    private _password: string;
+    private _isDeleted: false;
+    private _createdAt: Date;
+    private _updatedAt: Date;
+
+    constructor(createUserDTO: CreateUserDTO) {
+        this._email = createUserDTO.email;
+        this._password = createUserDTO.password;
+        this._isDeleted = false;
+        this._createdAt = new Date();
+        this._updatedAt = undefined;
+    }
+
+    get email(): string {
+        return this._email;
+    }
+
+    set email(value: string) {
+        this._email = value;
+    }
+
+    get password(): string {
+        return this._password;
+    }
+
+    set password(value: string) {
+        this._password = value;
+    }
+
+    get isDeleted(): false {
+        return this._isDeleted;
+    }
+
+    set isDeleted(value: false) {
+        this._isDeleted = value;
+    }
+
+    get createdAt(): Date {
+        return this._createdAt;
+    }
+
+    set createdAt(value: Date) {
+        this._createdAt = value;
+    }
+
+    get updatedAt(): Date {
+        return this._updatedAt;
+    }
+
+    set updatedAt(value: Date) {
+        this._updatedAt = value;
+    }
 }

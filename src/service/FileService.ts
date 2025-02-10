@@ -1,10 +1,10 @@
-import {File, FileUploadingInitialization} from '../database/model/File';
+import {File, FileUploadingInitialization, FileUploadingInitiationResponse} from '../database/model/File';
 import {CreateUploadSession, UploadSession} from "../database/model/UploadSession";
-import UploadSessionService from "./UploadSessionService";
 import {CreateUploadChunk} from "../database/model/UploadChunk";
 import {UploadChunkRepository} from "../database/repositories/UploadChunkRepository";
 import {FileRepository} from "../database/repositories/FileRepository";
 import {UploadSessionRepository} from "../database/repositories/UploadSessionRepository";
+import {S3} from "aws-sdk";
 
 const uploadChunkRepository = new UploadChunkRepository();
 const fileRepository = new FileRepository();
@@ -18,12 +18,7 @@ class FileService {
             throw new Error('Internal Server Error');
         }
 
-        const fileCreationPayload = new File({ folderId: payload.folderId, userId: payload.userId, name: payload.name,
-            mimeType: payload.mimeType, size: payload.size, uploadStatus: payload.uploadStatus,
-            createdAt: payload.createdAt, isDeleted: payload.isDeleted,
-        });
-
-        const file: File = await fileRepository.create(fileCreationPayload);
+        const file: File = await fileRepository.create(payload);
 
         if (!file) {
             console.error(`File is failed to create. folderId : ${payload.folderId} . userId : ${payload.userId}`);
@@ -42,7 +37,6 @@ class FileService {
         for (let i = 0 ; i < payload.totalChunks ; i++) {
             const sizeChunk = Math.ceil(file.size / payload.totalChunks);
             const chunk: CreateUploadChunk = new CreateUploadChunk(file.id, i, sizeChunk);
-
             const uploadChunk = await uploadChunkRepository.createUploadChunk(chunk);
             if (!uploadChunk) {
                 console.error(`Failed to process upload chunk. FileId ${file.id} . 
@@ -51,12 +45,15 @@ class FileService {
             }
         }
 
+        try {
+            const multipartResponse: S3.Types.CreateMultipartUploadOutput =
+                await fileRepository.initiateMultipartUploadS3(file.mimeType, file.name);
+            return new FileUploadingInitiationResponse(multipartResponse.UploadId, process.env.S3_BUCKET as string);
+        } catch (error) {
+            console.error(`Error: ${error}`);
+            throw new Error('Internal Server Error');
+        }
 
-
-
-        // init upload to s3
-        // return upload ID and bucket
-        // return new FileUploadingInitiationResponse();
     }
 }
 

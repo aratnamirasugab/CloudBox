@@ -5,9 +5,11 @@ import Folder, {CreateFolderDTO, CreateFolderResponse} from "../database/model/F
 import ResponseHandler from "../utils/ResponseHandler";
 import verifyToken from "../middleware/token";
 import Authentication from "../model/Authentication";
+import {FolderRepository} from "../database/repositories/FolderRepository";
 
 const router = express.Router();
-const folderService = new FolderService();
+
+const folderRepository = new FolderRepository();
 
 router.post('/folder/create',
     verifyToken,
@@ -17,7 +19,7 @@ router.post('/folder/create',
     try {
         const createFolderPayload: CreateFolderDTO = req.body;
         const authenticated: Authentication = req.body.verify;
-        const folder: Folder = await folderService.createFolder(
+        const folder: Folder = await folderRepository.createFolder(
                 createFolderPayload,
                 authenticated.getUserId()
         );
