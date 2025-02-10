@@ -26,7 +26,7 @@ app.use(cors());
 
 app.use('/api', FileRoutes, FolderRoutes, UserRoutes);
 
-db.sync().then(() => {
+db.sync({force: true}).then(() => {
     app.listen(PORT, () => {
         console.log(`Listening on port ${PORT}`);
     });

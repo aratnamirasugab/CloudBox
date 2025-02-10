@@ -1,50 +1,33 @@
 import express from 'express';
 import FileService from '../service/FileService';
+import verifyToken from "../middleware/token";
+import Validator from "../middleware/validator";
+import {FileUploadingInitialization, FileUploadingInitiationResponse, UploadFileDTO} from "../database/model/File";
+import ResponseHandler from "../utils/ResponseHandler";
+import Authentication from "../model/Authentication";
 
 const router = express.Router();
 const fileService  = new FileService();
 
-router.get('/file/:id', async (
-        req,
-        res) => {
-    const id = parseInt(req.params.id);
-    const file = await fileService.getFileById(id);
-    res.json(file);
-});
+router.post('/file/upload/new',
+    verifyToken,
+    Validator.classValidator(UploadFileDTO),
+    async (req, res) => {
 
-router.post('/file/create', async(
-        req,
-        res) => {
-    const { folderId, userId, name, mimeType, size} = req.body;
-    const file = await fileService.createFile(folderId, userId, name,
-            mimeType, size);
-    res.json(file);
-});
+    try {
+        const uploadFileDTO: UploadFileDTO = req.body;
+        const authenticated: Authentication = req.body.verify;
 
-router.delete('/file/:id', async(
-        req,
-        res) => {
-    const id = parseInt(req.params.id);
-    const file = await fileService.deleteFileById(id);
-    res.json(file);
-});
+        const fileInitializationPayload: FileUploadingInitialization = new FileUploadingInitialization(
+                uploadFileDTO, authenticated.getUserId());
+        const filteredResponse: FileUploadingInitiationResponse = await fileService.initiateUpload(
+                fileInitializationPayload);
+        return ResponseHandler.success(res, filteredResponse);
+    } catch (error) {
+        console.log(`Failed during file uploading process ${error}`);
+        return ResponseHandler.error(res);
+    }
 
-router.get('/file/folder/:folderId', async(
-        req,
-        res) => {
-    const folderId = parseInt(req.params.folderId);
-    const files = await fileService.getFilesByFolderId(folderId);
-    res.json(files);
-});
-
-router.patch('/file/:id', async(
-        req,
-        res) => {
-    const id = parseInt(req.params.id);
-    const { folderId, userId, name, mimeType, size, uploadStatus, createdAt, isDeleted} = req.body;
-    const file = await fileService.updateFileById(id, folderId, userId, name,
-            mimeType, size, uploadStatus, createdAt, isDeleted);
-    res.json(file);
 })
 
 export default router;

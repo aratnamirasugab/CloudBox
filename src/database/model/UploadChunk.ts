@@ -5,17 +5,13 @@ interface UploadChunkAttributes {
     fileId: number;
     chunkIndex: number;
     size: number;
-    blobLink: string;
     isUploaded: boolean;
-    checksum: string;
     uploadedAt: Date;
 }
 
 interface UploadChunkCreationAttributes extends Optional<UploadChunkAttributes, 'id'> {}
 
 class UploadChunk extends Model<UploadChunkAttributes, UploadChunkCreationAttributes> implements UploadChunkAttributes {
-    blobLink!: string;
-    checksum!: string;
     chunkIndex!: number;
     fileId!: number;
     id!: number;
@@ -42,25 +38,19 @@ class UploadChunk extends Model<UploadChunkAttributes, UploadChunkCreationAttrib
                 type: DataTypes.INTEGER,
                 allowNull: false
             },
-            blobLink: {
-                type: DataTypes.STRING,
-                allowNull: false
-            },
             isUploaded: {
                 type: DataTypes.BOOLEAN,
-                allowNull: false
-            },
-            checksum: {
-                type: DataTypes.STRING,
-                allowNull: false
+                allowNull: false,
+                defaultValue: false
             },
             uploadedAt: {
-                type: DataTypes.INTEGER,
-                allowNull: false
+                type: DataTypes.DATE,
+                allowNull: false,
+                defaultValue: new Date()
             }
         }, {
             sequelize,
-            tableName: 'UploadChunk'
+            tableName: 'Upload_Chunk'
         })
     }
 }

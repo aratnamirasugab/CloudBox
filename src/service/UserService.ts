@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 
 class UserService {
 
-    async registerNewUser(userPayload : CreateUserDTO) {
+    async registerNewUser(userPayload : CreateUserDTO): Promise<User> {
         const existingUser = await this.getUserByEmail(userPayload.email);
         if (existingUser) {
             throw new Error('user already exists, please use another email');
@@ -26,7 +26,7 @@ class UserService {
     }
 
 
-    async loginUser(loginPayload : CreateUserDTO) {
+    async loginUser(loginPayload : CreateUserDTO): Promise<string> {
         const user = await this.getUserByEmail(loginPayload.email);
         if (!user) {
             throw new Error('user is not exists');
@@ -59,34 +59,10 @@ class UserService {
         });
     }
 
-    async getUserById(id: number) {
-        return await User.findByPk(id);
-    }
-
     async getUserByEmail(email: string) {
         return await User.findOne({
             where: {
                 email
-            }
-        });
-    }
-
-    async updateUserPasswordById(id: number, password: string) {
-        return await User.update({
-            password
-        }, {
-            where: {
-                id
-            }
-        });
-    }
-
-    async deleteUserById(id: number) {
-        return await User.update({
-            isDeleted: true
-        }, {
-            where: {
-                id
             }
         });
     }
