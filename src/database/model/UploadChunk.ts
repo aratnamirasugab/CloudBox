@@ -59,4 +59,15 @@ export function initializeUploadChunkTable(db : Sequelize) {
     UploadChunk.initialize(db);
 }
 
+export class CreateUploadChunk {
+    private fileId: number;
+    private chunkIndex: number;
+    private size: number;
+    private isUploaded: boolean;
+    private uploadedAt: Date
+    
+    constructor(fileId: number, chunkIndex:n) {
+    }
+}
+
 export default UploadChunk;

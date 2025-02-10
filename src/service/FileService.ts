@@ -38,14 +38,14 @@ class FileService {
         }
 
         // upload chunk
-        for (const chunk of payload.totalChunks) {
+        for (let i = 0 ; i < payload.totalChunks ; i++) {
 
         }
 
 
         // init upload to s3
         // return upload ID and bucket
-        return new FileUploadingInitiationResponse();
+        // return new FileUploadingInitiationResponse();
     }
 }
 
