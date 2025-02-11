@@ -18,6 +18,16 @@ export class FileRepository {
         });
     }
 
+    async updateFileUploadStatusWithId(fileId: number, newUploadStatus: string)
+            : Promise<[affectedCount: number, affectedRows: File[]]> {
+        return await File.update({
+            uploadStatus: newUploadStatus
+        }, {returning: true, where: {id: fileId}});
+    }
+
+    /*
+    * S3 Related-Queries
+    * */
     async initiateMultipartUploadS3(contentType: string, key: string): Promise<S3.Types.CreateMultipartUploadOutput> {
         const params: CreateMultipartUploadRequest = {
             Bucket: process.env.S3_BUCKET as string,

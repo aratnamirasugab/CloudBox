@@ -130,4 +130,52 @@ export class CompleteUploadChunkDTO {
     @IsNotEmpty()
     @IsString()
     private _etag: string;
+
+    get chunkIndex(): number {
+        return this._chunkIndex;
+    }
+
+    get fileId(): number {
+        return this._fileId;
+    }
+
+    get etag(): string {
+        return this._etag;
+    }
+}
+
+export class CompleteUploadChunkResponse {
+    private _fileId: number;
+    private _chunkId: number;
+    private _message: string;
+
+    constructor(fileId: number, chunkId: number, message: string) {
+        this._fileId = fileId;
+        this._chunkId = chunkId;
+        this._message = message;
+    }
+
+    get fileId(): number {
+        return this._fileId;
+    }
+
+    set fileId(value: number) {
+        this._fileId = value;
+    }
+
+    get chunkId(): number {
+        return this._chunkId;
+    }
+
+    set chunkId(value: number) {
+        this._chunkId = value;
+    }
+
+    get message(): string {
+        return this._message;
+    }
+
+    set message(value: string) {
+        this._message = value;
+    }
 }

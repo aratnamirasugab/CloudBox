@@ -4,8 +4,10 @@ import Validator from "../middleware/validator";
 import {CompleteUploadChunkDTO} from "../database/model/UploadChunk";
 import ResponseHandler from "../utils/ResponseHandler";
 import Authentication from "../model/Authentication";
+import {UploadChunkService} from "../service/UploadChunkService";
 
 const router = express.Router();
+const uploadChunkService = new UploadChunkService();
 
 router.patch('/upload_chunk/notify',
     verifyToken,
@@ -15,8 +17,7 @@ router.patch('/upload_chunk/notify',
     try {
         const chunkNotifyPayload: CompleteUploadChunkDTO = req.body;
         const authenticated: Authentication = req.body.verify;
-
-
+        return await uploadChunkService.patchChunkDetail(chunkNotifyPayload, authenticated.getUserId());
     } catch (error) {
         console.log(`Failed during chunk patching process ${error}`);
         return ResponseHandler.error(res);
