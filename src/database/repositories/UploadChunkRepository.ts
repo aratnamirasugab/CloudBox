@@ -1,4 +1,5 @@
 import {CreateUploadChunk, UploadChunk} from "../model/UploadChunk";
+import {where} from "sequelize";
 
 export class UploadChunkRepository {
 
@@ -10,12 +11,13 @@ export class UploadChunkRepository {
         return await UploadChunk.create(chunk);
     }
 
-    async updateChunkStatus(chunk: UploadChunk, newStatus: boolean):
+    async updateChunkById(chunk: UploadChunk, id: number):
             Promise<[affectedCount: number, affectedRows: UploadChunk[]]> {
-        return await UploadChunk.update({
-            isUploaded: newStatus,
-            uploadedAt: new Date()
-        }, {returning: true,  where: { chunkIndex: chunk.chunkIndex } });
+        return await UploadChunk.update(chunk, {returning: true,  where: { chunkIndex: chunk.chunkIndex } });
+    }
+
+    async findByFileId(fileId: number): Promise<[UploadChunk]> {
+        return await UploadChunk.findAll({ where: {fileId: fileId} } );
     }
 
 }

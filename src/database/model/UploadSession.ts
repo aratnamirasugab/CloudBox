@@ -14,13 +14,13 @@ interface UploadSessionAttributes {
 interface UploadSessionCreationAttributes extends Optional<UploadSessionAttributes, 'id'> {}
 
 export class UploadSession extends Model<UploadSessionAttributes, UploadSessionCreationAttributes> implements UploadSessionAttributes {
-    id!: number;
-    fileId!: number;
-    totalChunks!: number;
-    uploadedChunks!: number;
-    status!: string;
-    updatedAt!: Date;
-    createdAt!: Date;
+    id: number;
+    fileId: number;
+    totalChunks: number;
+    uploadedChunks: number;
+    status: string;
+    updatedAt: Date;
+    createdAt: Date;
 
     public static initialize(sequelize: Sequelize) {
         UploadSession.init({

@@ -1,5 +1,5 @@
 import {DataTypes, Model, Optional, Sequelize} from "sequelize";
-import {IsNotEmpty, IsNumber, IsString} from "class-validator";
+import {IsArray, IsNotEmpty, IsNumber, IsString} from "class-validator";
 
 interface UploadChunkAttributes {
     id: number;
@@ -14,13 +14,13 @@ interface UploadChunkAttributes {
 interface UploadChunkCreationAttributes extends Optional<UploadChunkAttributes, 'id'> {}
 
 export class UploadChunk extends Model<UploadChunkAttributes, UploadChunkCreationAttributes> implements UploadChunkAttributes {
-    chunkIndex!: number;
-    fileId!: number;
-    id!: number;
-    isUploaded!: boolean;
-    size!: number;
-    eTag!: string;
-    uploadedAt!: Date;
+    id: number;
+    fileId: number;
+    chunkIndex: number;
+    size: number;
+    eTag: string;
+    isUploaded: boolean;
+    uploadedAt: Date;
 
     public static initialize(sequelize : Sequelize) {
         UploadChunk.init({
@@ -146,10 +146,10 @@ export class CompleteUploadChunkDTO {
 
 export class CompleteUploadChunkResponse {
     private _fileId: number;
-    private _chunkId: number;
+    private _chunkId: [number];
     private _message: string;
 
-    constructor(fileId: number, chunkId: number, message: string) {
+    constructor(fileId: number, chunkId: [number], message: string) {
         this._fileId = fileId;
         this._chunkId = chunkId;
         this._message = message;
@@ -163,11 +163,11 @@ export class CompleteUploadChunkResponse {
         this._fileId = value;
     }
 
-    get chunkId(): number {
+    get chunkId(): [number] {
         return this._chunkId;
     }
 
-    set chunkId(value: number) {
+    set chunkId(value: [number]) {
         this._chunkId = value;
     }
 
@@ -177,5 +177,31 @@ export class CompleteUploadChunkResponse {
 
     set message(value: string) {
         this._message = value;
+    }
+}
+
+export class FinishUploadAllChunkDTO {
+    @IsNotEmpty()
+    @IsArray()
+    private _chunkIds: [number];
+
+    @IsNotEmpty()
+    @IsArray()
+    private _eTags: [string];
+
+    @IsNotEmpty()
+    @IsNumber()
+    private _fileId: number;
+
+    get chunkIds(): [number] {
+        return this._chunkIds;
+    }
+
+    get eTags(): [string] {
+        return this._eTags;
+    }
+
+    get fileId(): number {
+        return this._fileId;
     }
 }

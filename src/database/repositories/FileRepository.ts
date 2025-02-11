@@ -1,6 +1,6 @@
 import {File, FileUploadingInitialization} from '../model/File';
 import {S3Client} from "../../utils/s3Client";
-import {CreateMultipartUploadRequest} from "aws-sdk/clients/s3";
+import {CompleteMultipartUploadRequest, CreateMultipartUploadRequest} from "aws-sdk/clients/s3";
 import {S3} from "aws-sdk";
 
 const s3Client = new S3Client().initializeS3();
@@ -21,7 +21,8 @@ export class FileRepository {
     async updateFileUploadStatusWithId(fileId: number, newUploadStatus: string)
             : Promise<[affectedCount: number, affectedRows: File[]]> {
         return await File.update({
-            uploadStatus: newUploadStatus
+            uploadStatus: newUploadStatus,
+            updatedAt: new Date()
         }, {returning: true, where: {id: fileId}});
     }
 
@@ -39,6 +40,20 @@ export class FileRepository {
             return await s3Client.createMultipartUpload(params).promise();
         } catch (err) {
             console.error(err);
+            throw new Error('Internal Server Error');
+        }
+    }
+
+    async completeMultipartUploadS3(request: CompleteMultipartUploadRequest)
+        : Promise<S3.Types.CompleteMultipartUploadOutput> {
+        try {
+            const param = {
+                Bucket: process.env.S3_BUCKET as string
+            }
+
+            return await s3Client.completeMultipartUpload(request).promise();
+        } catch (error) {
+            console.error(error);
             throw new Error('Internal Server Error');
         }
     }
