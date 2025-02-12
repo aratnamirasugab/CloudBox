@@ -4,6 +4,7 @@ import {CompletedPart, CompleteMultipartUploadRequest, CreateMultipartUploadRequ
 import {S3} from "aws-sdk";
 import {ChunkIdETag, FinishUploadAllChunkDTO} from "../model/UploadChunk";
 import {where} from "sequelize";
+import {Status} from "../../model/enum/Status";
 
 const s3Client = new S3Client().initializeS3();
 
@@ -31,6 +32,18 @@ export class FileRepository {
     async updateWithFileId(fileId: number, file: File): Promise<[affectedCount: number, affectedRows: File[]]> {
         return await File.update(file, { returning: true, where: { id: fileId } });
     }
+
+    async getFilesWithFolderId(folderId: number | undefined, userId: number): Promise<File[]> {
+        return await File.findAll({
+            where: {
+                folderId: folderId ?? 0,
+                userId: userId,
+                uploadStatus: Status.FINISHED.toString(),
+                isDeleted: false
+            }
+        });
+    }
+
 
     /*
     * S3 Related-Queries

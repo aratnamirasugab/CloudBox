@@ -1,4 +1,5 @@
 import {DataTypes, Model, Optional, Sequelize} from "sequelize";
+import {File} from "./File";
 import {IsNotEmpty, IsNumber, IsString} from "class-validator";
 
 interface FolderAttributes {
@@ -12,13 +13,13 @@ interface FolderAttributes {
 
 interface FolderCreationAttributes extends Optional<FolderAttributes, 'id'> {}
 
-class Folder extends Model<FolderAttributes, FolderCreationAttributes> implements FolderAttributes {
+export class Folder extends Model<FolderAttributes, FolderCreationAttributes> implements FolderAttributes {
     id!: number;
-    createdAt!: Date;
-    isDeleted!: boolean;
-    name!: string;
     parentFolderId!: number;
     userId!: number;
+    name!: string;
+    createdAt!: Date;
+    isDeleted!: boolean;
 
     public static initialize(sequelize: Sequelize) {
         Folder.init({
@@ -88,4 +89,32 @@ export class CreateFolderResponse {
     }
 }
 
-export default Folder;
+export class ViewFolderDTO {
+    folderId: number | undefined;
+}
+
+export class ViewFolderResponse {
+    private _folders: Folder[];
+    private _files: File[]
+
+    constructor(folders: Folder[], files: File[]) {
+        this._folders = folders;
+        this._files = files;
+    }
+
+    get folders(): Folder[] {
+        return this._folders;
+    }
+
+    set folders(value: Folder[]) {
+        this._folders = value;
+    }
+
+    get files(): File[] {
+        return this._files;
+    }
+
+    set files(value: File[]) {
+        this._files = value;
+    }
+}

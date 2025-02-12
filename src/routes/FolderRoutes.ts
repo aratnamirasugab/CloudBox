@@ -1,14 +1,23 @@
 import express from 'express';
 import Validator from "../middleware/validator";
-import Folder, {CreateFolderDTO, CreateFolderResponse} from "../database/model/Folder";
+import {
+    CreateFolderDTO,
+    CreateFolderResponse,
+    Folder,
+    ViewFolderDTO,
+    ViewFolderResponse
+} from "../database/model/Folder";
 import ResponseHandler from "../utils/ResponseHandler";
 import verifyToken from "../middleware/token";
 import Authentication from "../model/Authentication";
 import {FolderRepository} from "../database/repositories/FolderRepository";
+import {FileRepository} from "../database/repositories/FileRepository";
+import {File} from "../database/model/File";
 
 const router = express.Router();
 
 const folderRepository = new FolderRepository();
+const fileRepository = new FileRepository();
 
 router.post('/folder/create',
     verifyToken,
@@ -18,19 +27,30 @@ router.post('/folder/create',
     try {
         const createFolderPayload: CreateFolderDTO = req.body;
         const authenticated: Authentication = req.body.verify;
-        const folder: Folder = await folderRepository.createFolder(
-                createFolderPayload,
-                authenticated.getUserId()
-        );
-
-        const filteredResponse: CreateFolderResponse = new CreateFolderResponse(folder);
-        return ResponseHandler.success(res, filteredResponse);
+        const folder: Folder = await folderRepository.createFolder(createFolderPayload, authenticated.getUserId());
+        return ResponseHandler.success(res, new CreateFolderResponse(folder));
     } catch (error) {
-        console.error('Error creating folder: ', error);
         return ResponseHandler.error(res);
     }
 });
 
-router.get('/folder/files', verifyToken, )
+router.get('/folder/view',
+    verifyToken,
+    Validator.classValidator(ViewFolderDTO),
+    async (req, res) => {
+
+    try {
+        const payload: ViewFolderDTO = req.body;
+        const authenticated: Authentication = req.body.verify;
+
+        const files: File[]  = await fileRepository.getFilesWithFolderId(payload.folderId, authenticated.getUserId());
+        const folders: Folder[] = await folderRepository.getFoldersByParentFolderId(
+            payload.folderId, authenticated.getUserId());
+        return ResponseHandler.success(res, new ViewFolderResponse(folders, files));
+    } catch (error) {
+        return ResponseHandler.error(res);
+    }
+
+})
 
 export default router;

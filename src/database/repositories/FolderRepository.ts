@@ -1,4 +1,4 @@
-import Folder, {CreateFolderDTO} from "../model/Folder";
+import {CreateFolderDTO, Folder} from "../model/Folder";
 
 export class FolderRepository {
     async getFolderById(id: number): Promise<Folder> {
@@ -12,5 +12,15 @@ export class FolderRepository {
             userId: userId,
             createdAt: new Date()
         });
+    }
+
+async getFoldersByParentFolderId(parentFolderId: number | undefined, userId: number): Promise<Folder[]> {
+        return await Folder.findAll({
+            where: {
+                parentFolderId : parentFolderId ?? 0,
+                userId : userId,
+                isDeleted: false
+            }
+        })
     }
 }
