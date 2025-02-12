@@ -16,7 +16,7 @@ export class UploadChunkRepository {
         return await UploadChunk.update(chunk, {returning: true,  where: { chunkIndex: chunk.chunkIndex } });
     }
 
-    async findByFileId(fileId: number): Promise<[UploadChunk]> {
+    async findByFileId(fileId: number): Promise<UploadChunk[]> {
         return await UploadChunk.findAll({ where: {fileId: fileId} } );
     }
 

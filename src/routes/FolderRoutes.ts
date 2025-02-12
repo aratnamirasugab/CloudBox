@@ -31,4 +31,6 @@ router.post('/folder/create',
     }
 });
 
+router.get('/folder/files', verifyToken, )
+
 export default router;

@@ -146,10 +146,10 @@ export class CompleteUploadChunkDTO {
 
 export class CompleteUploadChunkResponse {
     private _fileId: number;
-    private _chunkId: [number];
+    private _chunkId: number[];
     private _message: string;
 
-    constructor(fileId: number, chunkId: [number], message: string) {
+    constructor(fileId: number, chunkId: number[], message: string) {
         this._fileId = fileId;
         this._chunkId = chunkId;
         this._message = message;
@@ -163,11 +163,11 @@ export class CompleteUploadChunkResponse {
         this._fileId = value;
     }
 
-    get chunkId(): [number] {
+    get chunkId(): number[] {
         return this._chunkId;
     }
 
-    set chunkId(value: [number]) {
+    set chunkId(value: number[]) {
         this._chunkId = value;
     }
 
@@ -180,28 +180,67 @@ export class CompleteUploadChunkResponse {
     }
 }
 
+export class ChunkIdETag {
+    private _partNumber: number;
+    private _eTag: string;
+
+    constructor(partNumber: number, eTag: string) {
+        this._partNumber = partNumber;
+        this._eTag = eTag;
+    }
+
+    get partNumber(): number {
+        return this._partNumber;
+    }
+
+    set chunkId(value: number) {
+        this._partNumber = value;
+    }
+
+    get eTag(): string {
+        return this._eTag;
+    }
+
+    set eTag(value: string) {
+        this._eTag = value;
+    }
+}
+
 export class FinishUploadAllChunkDTO {
-    @IsNotEmpty()
-    @IsArray()
-    private _chunkIds: [number];
 
     @IsNotEmpty()
     @IsArray()
-    private _eTags: [string];
+    private _chunkIdETagList: ChunkIdETag[];
 
     @IsNotEmpty()
     @IsNumber()
     private _fileId: number;
 
-    get chunkIds(): [number] {
-        return this._chunkIds;
+    @IsNotEmpty()
+    @IsString()
+    private _uploadId: string;
+
+    get chunkIdETagList(): ChunkIdETag[] {
+        return this._chunkIdETagList;
     }
 
-    get eTags(): [string] {
-        return this._eTags;
+    set chunkIdETagList(value: ChunkIdETag[]) {
+        this._chunkIdETagList = value;
     }
 
     get fileId(): number {
         return this._fileId;
+    }
+
+    set fileId(value: number) {
+        this._fileId = value;
+    }
+
+    get uploadId(): string {
+        return this._uploadId;
+    }
+
+    set uploadId(value: string) {
+        this._uploadId = value;
     }
 }

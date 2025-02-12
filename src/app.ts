@@ -8,6 +8,7 @@ import db from './database/db';
 import FileRoutes from './routes/FileRoutes';
 import FolderRoutes from "./routes/FolderRoutes";
 import UserRoutes from "./routes/UserRoutes";
+import UploadChunkRoutes from "./routes/UploadChunkRoute"
 
 dotenv.config()
 
@@ -24,7 +25,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
 
-app.use('/api', FileRoutes, FolderRoutes, UserRoutes);
+app.use('/api', FileRoutes, FolderRoutes, UserRoutes, UploadChunkRoutes);
 
 db.sync({force: true}).then(() => {
     app.listen(PORT, () => {

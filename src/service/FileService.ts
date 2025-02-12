@@ -12,7 +12,7 @@ const uploadSessionRepository = new UploadSessionRepository();
 
 class FileService {
 
-    async initiateUpload(payload: FileUploadingInitialization) {
+    async initiateUpload(payload: FileUploadingInitialization): Promise<FileUploadingInitiationResponse> {
 
         if (0 === payload.totalChunks) {
             throw new Error('Internal Server Error');

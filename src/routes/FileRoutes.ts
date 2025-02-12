@@ -18,10 +18,10 @@ router.post('/file/upload/new',
         const uploadFileDTO: UploadFileDTO = req.body;
         const authenticated: Authentication = req.body.verify;
 
-        const fileInitializationPayload: FileUploadingInitialization = new FileUploadingInitialization(
-                uploadFileDTO, authenticated.getUserId());
-        const filteredResponse: FileUploadingInitiationResponse = await fileService.initiateUpload(
-                fileInitializationPayload);
+        const fileInitializationPayload: FileUploadingInitialization =
+            new FileUploadingInitialization(uploadFileDTO, authenticated.getUserId());
+        const filteredResponse: FileUploadingInitiationResponse =
+            await fileService.initiateUpload(fileInitializationPayload);
         return ResponseHandler.success(res, filteredResponse);
     } catch (error) {
         console.log(`Failed during file uploading process ${error}`);
