@@ -2,7 +2,7 @@ import express from 'express';
 import Validator from "../middleware/validator";
 import {
     CreateFolderDTO,
-    CreateFolderResponse,
+    CreateFolderResponse, DeleteFolderRequestDTO, DeleteFolderResponseDTO,
     Folder,
     UpdateFolderDTO,
     ViewFolderDTO,
@@ -69,6 +69,19 @@ router.patch('/folder/update',
         return ResponseHandler.success(res);
     } catch (error) {
         return ResponseHandler.error(error);
+    }
+})
+
+router.delete('/folder/delete', verifyToken, Validator.classValidator(DeleteFolderRequestDTO), async (req, res) => {
+    try {
+        const authenticated: Authentication = req.body.verify;
+        const payload: DeleteFolderRequestDTO = req.body;
+
+        const filteredResponse: DeleteFolderResponseDTO =
+            await folderService.deleteFolderByIds(payload.folderId, authenticated.getUserId());
+        return ResponseHandler.success(res, filteredResponse);
+    } catch (error) {
+        return ResponseHandler.error(res);
     }
 })
 

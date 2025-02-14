@@ -1,6 +1,15 @@
 import {DataTypes, Model, Optional, Sequelize} from 'sequelize';
-import {IsNotEmpty, IsNumber, IsString} from "class-validator";
+import {IsArray, IsNotEmpty, IsNumber, IsString} from "class-validator";
 import {Status} from "../../model/enum/Status";
+
+/*
+ *  Response Utility
+ */
+export type FileResponse = Omit<File, 'id' | 'updatedAt' | 'userId' | 'uploadStatus' | 'blobLink' | 'isDeleted'>
+/*
+ * End of Response Utility
+ */
+
 
 interface FileAttributes {
     id: number;
@@ -112,19 +121,19 @@ export class UploadFileDTO {
 
 export class FileUploadingInitiationResponse {
     private uploadId: string;
-    private presignURL: string;
+    private preSignURL: string;
 
-    constructor(uploadId: string | undefined, presignURL: string | undefined) {
+    constructor(uploadId: string | undefined, preSignURL: string | undefined) {
         this.uploadId = uploadId;
-        this.presignURL = presignURL;
+        this.preSignURL = preSignURL;
     }
 
     public getUploadId(): string {
         return this.uploadId;
     }
 
-    get presignURL(): string {
-        return this.presignURL;
+    get preSignURL(): string {
+        return this.preSignURL;
     }
 }
 
@@ -223,4 +232,14 @@ export class FileUploadingInitialization {
     set totalChunks(value: number) {
         this._totalChunks = value;
     }
+}
+
+export class DeleteFileRequestDTO {
+    @IsNotEmpty()
+    @IsNumber()
+    currentFolderId: number;
+
+    @IsNotEmpty()
+    @IsArray()
+    fileIds: number[];
 }

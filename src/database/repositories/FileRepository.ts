@@ -3,7 +3,7 @@ import {S3Client} from "../../utils/s3Client";
 import {CompletedPart, CompleteMultipartUploadRequest, CreateMultipartUploadRequest} from "aws-sdk/clients/s3";
 import {S3} from "aws-sdk";
 import {ChunkIdETag, FinishUploadAllChunkDTO} from "../model/UploadChunk";
-import {Op} from "sequelize";
+import {Op, Sequelize, Transaction} from "sequelize";
 import {Status} from "../../model/enum/Status";
 
 const s3Client = new S3Client().initializeS3();
@@ -55,6 +55,57 @@ export class FileRepository {
                 isDeleted: false
             }
         })
+    }
+
+    async getFileWithIdsUserIds(folderId: number, fileIds: number[], userId: number): Promise<File[]> {
+        return await File.findAll({
+            where: {
+                fileId: {
+                    [Op.in]: fileIds
+                },
+                folderId: folderId,
+                userId: userId,
+                uploadStatus: Status.FINISHED.toString(),
+                isDeleted: false
+            }
+        })
+    }
+
+    async deleteFilesWithIds(fileIds: number[], folderId: number, transaction: Transaction | undefined): Promise<[affectedCount: number, affectedRows: File[]]> {
+        return await File.update({
+            isDeleted: true
+        }, {
+            returning: false,
+            where: {
+                id: {
+                    [Op.in]: fileIds
+                },
+                isDeleted: false,
+                folderId: folderId,
+                uploadStatus: Status.FINISHED.toString()
+            },
+            transaction: transaction
+        })
+    }
+
+    async getFilesIdByFolderId(folderId: number, userId: number): Promise<number[]> {
+        const fileIds = await File.findAll({
+            attributes: ['id'],
+            where: {
+                folderId: folderId,
+                userId: userId,
+                isDeleted: false,
+                uploadStatus: Status.FINISHED.toString()
+            },
+            raw: true,
+        })
+
+        const resultFileIds: number[] = [];
+        if (fileIds.length > 0) {
+            resultFileIds.push(...fileIds.map(file => file.id));
+        }
+
+        return resultFileIds;
     }
 
 

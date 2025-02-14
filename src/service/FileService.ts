@@ -1,4 +1,9 @@
-import {File, FileUploadingInitialization, FileUploadingInitiationResponse} from '../database/model/File';
+import {
+    DeleteFileRequestDTO,
+    File,
+    FileUploadingInitialization,
+    FileUploadingInitiationResponse
+} from '../database/model/File';
 import {CreateUploadSession, UploadSession} from "../database/model/UploadSession";
 import {CreateUploadChunk} from "../database/model/UploadChunk";
 import {UploadChunkRepository} from "../database/repositories/UploadChunkRepository";
@@ -69,6 +74,20 @@ class FileService {
         }
 
         return fileRepository.getFilesWithKey(key, userId);
+    }
+
+    async deleteFileByFileIds(payload: DeleteFileRequestDTO, userId: number): Promise<void> {
+        const existingFiles: File[] =
+            await fileRepository.getFileWithIdsUserIds(payload.currentFolderId, payload.fileIds, userId);
+        if (!existingFiles) {
+            return;
+        }
+
+        const [affectedCount] = await fileRepository.deleteFilesWithIds(payload.fileIds, payload.currentFolderId);
+        if (affectedCount === 0) {
+            console.error(`Files failed to deleted. Ids : ${payload.fileIds}`);
+            throw new Error('Internal Server Error');
+        }
     }
 }
 

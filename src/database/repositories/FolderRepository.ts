@@ -1,5 +1,5 @@
 import {CreateFolderDTO, Folder, UpdateFolderDTO} from "../model/Folder";
-import {Op} from "sequelize";
+import {Op, QueryTypes, Transaction, where} from "sequelize";
 
 export class FolderRepository {
     async getFolderById(id: number): Promise<Folder> {
@@ -43,6 +43,41 @@ export class FolderRepository {
                 userId: userId,
                 isDeleted: false
             }
+        })
+    }
+
+    async getAllSubFolderIds(folderId: number,  userId: number): Promise<number[]> {
+        const query: string = `
+            WITH RECURSIVE folder_hierarchy AS (
+                SELECT id FROM Folder WHERE id = :folderId, userId = :userId 
+                UNION ALL
+                SELECT f.id FROM Folder f INNER JOIN folder_hierarchy fh ON f.parent_folder_id = fh.id
+            )
+            SELECT id FROM folder_hierarchy
+        `;
+
+        const result = await Folder.sequelize.query(query, {
+            replacements: { folderId, userId },
+            type: QueryTypes.SELECT
+        });
+
+        return result.map(row => row.id);
+    }
+
+    async deleteFoldersWithIds(folderIds: number[], userId:number, transaction: Transaction | undefined):
+        Promise<[affectedCount: number, affectedRows: Folder[]]> {
+        return await Folder.update({
+            isDeleted: true
+        }, {
+            returning: false,
+            where: {
+                id: {
+                    [Op.in]: folderIds
+                },
+                userId: userId,
+                isDeleted: false
+            },
+            transaction: transaction
         })
     }
 

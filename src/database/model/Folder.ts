@@ -1,6 +1,15 @@
 import {DataTypes, Model, Optional, Sequelize} from "sequelize";
-import {File} from "./File";
-import {IsNotEmpty, IsNumber, IsString} from "class-validator";
+import {File, FileResponse} from "./File";
+import {IsArray, IsNotEmpty, IsNumber, IsString} from "class-validator";
+
+/*
+ *  Response Utility
+ */
+export type FolderResponse = Omit<Folder, 'id' | 'userId' | 'isDeleted'>
+/*
+ * End of Response Utility
+ */
+
 
 interface FolderAttributes {
     id: number;
@@ -94,33 +103,32 @@ export class ViewFolderDTO {
 }
 
 export class ViewFolderResponse {
-    private _folders: Folder[];
-    private _files: File[]
+    private _folders: FolderResponse[];
+    private _files: FileResponse[];
 
-    constructor(folders: Folder[], files: File[]) {
+    constructor(folders: FolderResponse[], files: FileResponse[]) {
         this._folders = folders;
         this._files = files;
     }
 
-    get folders(): Folder[] {
+    get folders(): FolderResponse[] {
         return this._folders;
     }
 
-    set folders(value: Folder[]) {
+    set folders(value: FolderResponse[]) {
         this._folders = value;
     }
 
-    get files(): File[] {
+    get files(): FileResponse[] {
         return this._files;
     }
 
-    set files(value: File[]) {
+    set files(value: FileResponse[]) {
         this._files = value;
     }
 }
 
 export class UpdateFolderDTO {
-
     @IsNumber()
     @IsNotEmpty()
     folderId: number;
@@ -130,4 +138,20 @@ export class UpdateFolderDTO {
 
     @IsString()
     name: string | undefined;
+}
+
+export class DeleteFolderRequestDTO {
+    @IsArray()
+    @IsNotEmpty()
+    folderId: number;
+}
+
+export class DeleteFolderResponseDTO {
+    private folderAmount: number;
+    private fileAmount: number;
+
+    constructor(folderAmount: number, fileAmount: number) {
+        this.folderAmount = folderAmount;
+        this.fileAmount = fileAmount;
+    }
 }

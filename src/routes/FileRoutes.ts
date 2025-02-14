@@ -2,7 +2,12 @@ import express from 'express';
 import FileService from '../service/FileService';
 import verifyToken from "../middleware/token";
 import Validator from "../middleware/validator";
-import {FileUploadingInitialization, FileUploadingInitiationResponse, UploadFileDTO} from "../database/model/File";
+import {
+    DeleteFileRequestDTO,
+    FileUploadingInitialization,
+    FileUploadingInitiationResponse,
+    UploadFileDTO
+} from "../database/model/File";
 import ResponseHandler from "../utils/ResponseHandler";
 import Authentication from "../model/Authentication";
 
@@ -25,6 +30,18 @@ router.post('/file/upload/new',
         return ResponseHandler.success(res, filteredResponse);
     } catch (error) {
         console.log(`Failed during file uploading process ${error}`);
+        return ResponseHandler.error(res);
+    }
+})
+
+router.delete('/file/delete', verifyToken, Validator.classValidator(DeleteFileRequestDTO), async (req, res) => {
+    try {
+        const payload: DeleteFileRequestDTO = req.body;
+        const authenticated: Authentication = req.body.verify;
+
+        await fileService.deleteFileByFileIds(payload, authenticated.getUserId());
+        return ResponseHandler.success(res);
+    } catch (error) {
         return ResponseHandler.error(res);
     }
 })
