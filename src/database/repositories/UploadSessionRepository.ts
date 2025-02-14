@@ -1,5 +1,4 @@
 import {CreateUploadSession, UploadSession} from "../model/UploadSession";
-import {where} from "sequelize";
 
 export class UploadSessionRepository {
     async findById(id: number): Promise<UploadSession> {

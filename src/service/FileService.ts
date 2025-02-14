@@ -25,7 +25,6 @@ class FileService {
             throw new Error('Internal Server Error');
         }
 
-        // TODO : add an algo to decide if single upload / multipart upload here. < 5 MB per chunk must use single upload API.
         const uploadSessionPayload = new CreateUploadSession(file.id, payload.totalChunks);
         const uploadSession: UploadSession = await uploadSessionRepository.create(uploadSessionPayload);
 
@@ -36,24 +35,40 @@ class FileService {
 
         for (let i = 0 ; i < payload.totalChunks ; i++) {
             const sizeChunk = Math.ceil(file.size / payload.totalChunks);
-            const chunk: CreateUploadChunk = new CreateUploadChunk(file.id, i, sizeChunk);
-            const uploadChunk = await uploadChunkRepository.createUploadChunk(chunk);
-            if (!uploadChunk) {
-                console.error(`Failed to process upload chunk. FileId ${file.id} . 
-                    Chunk Index: ${i} . userId : ${payload.userId}`);
+
+            // parallel chunk creation.
+            const chunks = Array.from({ length: payload.totalChunks }, (_, i) =>
+                uploadChunkRepository.createUploadChunk(new CreateUploadChunk(file.id, i, sizeChunk))
+            );
+            await Promise.all(chunks);
+        }
+
+        // if file size is < 100MB use single upload API.
+        if (payload.size < 100 * 1024 * 1024) { // 100MB
+            try {
+                const preSignedURL: string = await fileRepository.getSingleUploadUrl(file.mimeType, file.name);
+                return new FileUploadingInitiationResponse(undefined, preSignedURL);
+            } catch (error) {
+                throw new Error('Internal Server Error');
+            }
+        } else {
+            try {
+                const multipartResponse: S3.Types.CreateMultipartUploadOutput =
+                    await fileRepository.initiateMultipartUploadS3(file.mimeType, file.name);
+                return new FileUploadingInitiationResponse(multipartResponse.UploadId, undefined);
+            } catch (error) {
                 throw new Error('Internal Server Error');
             }
         }
+    }
 
-        try {
-            const multipartResponse: S3.Types.CreateMultipartUploadOutput =
-                await fileRepository.initiateMultipartUploadS3(file.mimeType, file.name);
-            return new FileUploadingInitiationResponse(multipartResponse.UploadId, process.env.S3_BUCKET as string);
-        } catch (error) {
-            console.error(`Error: ${error}`);
-            throw new Error('Internal Server Error');
+    async getFilesByKey(key: string, userId: number): Promise<File[]> {
+
+        if (!key) {
+            return undefined;
         }
 
+        return fileRepository.getFilesWithKey(key, userId);
     }
 }
 

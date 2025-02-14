@@ -3,7 +3,7 @@ import {S3Client} from "../../utils/s3Client";
 import {CompletedPart, CompleteMultipartUploadRequest, CreateMultipartUploadRequest} from "aws-sdk/clients/s3";
 import {S3} from "aws-sdk";
 import {ChunkIdETag, FinishUploadAllChunkDTO} from "../model/UploadChunk";
-import {where} from "sequelize";
+import {Op} from "sequelize";
 import {Status} from "../../model/enum/Status";
 
 const s3Client = new S3Client().initializeS3();
@@ -44,10 +44,38 @@ export class FileRepository {
         });
     }
 
+    async getFilesWithKey(key: string, userId: number): Promise<File[]> {
+        return await File.findAll({
+            where: {
+                name: {
+                    [Op.iLike]: `%${key}%`
+                },
+                userId: userId,
+                uploadStatus: Status.FINISHED.toString(),
+                isDeleted: false
+            }
+        })
+    }
+
 
     /*
     * S3 Related-Queries
-    * */
+    */
+    async getSingleUploadUrl(contentType: string, key: string): Promise<string> {
+        const params = {
+            Bucket: process.env.S3_BUCKET as string,
+            Key: key,
+            ContentType: contentType,
+            Expires: process.env.S3_EXPIRES as number
+        };
+
+        try {
+            return await s3Client.getSignedUrlPromise("putObject", params);
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
+
     async initiateMultipartUploadS3(contentType: string, key: string): Promise<S3.Types.CreateMultipartUploadOutput> {
         const params: CreateMultipartUploadRequest = {
             Bucket: process.env.S3_BUCKET as string,
@@ -63,13 +91,12 @@ export class FileRepository {
         }
     }
 
-    async completeMultipartUploadS3(request: FinishUploadAllChunkDTO)
-        : Promise<S3.Types.CompleteMultipartUploadOutput> {
+    async completeMultipartUploadS3(request: FinishUploadAllChunkDTO): Promise<S3.Types.CompleteMultipartUploadOutput> {
         try {
             const param: CompleteMultipartUploadRequest = {
                 Bucket: process.env.S3_BUCKET as string,
-                Key: "Key",
-                UploadId: "someUploadId",
+                Key: request.fileId as string,
+                UploadId: request.uploadId,
                 MultipartUpload: {
                     Parts: this.generateCompletedParts(request.chunkIdETagList)
                 }
@@ -86,8 +113,7 @@ export class FileRepository {
         const completedPartList: CompletedPart[] = [];
         for (let i = 0 ; i < partList.length; i++) {
             completedPartList.push({
-                ETag: partList[i].eTag,
-                PartNumber: partList[i].partNumber
+                ETag: partList[i].eTag, PartNumber: partList[i].partNumber
             })
         }
         return completedPartList;

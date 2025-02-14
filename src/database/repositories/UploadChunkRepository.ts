@@ -1,5 +1,4 @@
 import {CreateUploadChunk, UploadChunk} from "../model/UploadChunk";
-import {where} from "sequelize";
 
 export class UploadChunkRepository {
 

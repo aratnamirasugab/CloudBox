@@ -4,6 +4,7 @@ import {
     CreateFolderDTO,
     CreateFolderResponse,
     Folder,
+    UpdateFolderDTO,
     ViewFolderDTO,
     ViewFolderResponse
 } from "../database/model/Folder";
@@ -13,8 +14,11 @@ import Authentication from "../model/Authentication";
 import {FolderRepository} from "../database/repositories/FolderRepository";
 import {FileRepository} from "../database/repositories/FileRepository";
 import {File} from "../database/model/File";
+import {FolderService} from "../service/FolderService";
 
 const router = express.Router();
+
+const folderService = new FolderService();
 
 const folderRepository = new FolderRepository();
 const fileRepository = new FileRepository();
@@ -50,7 +54,22 @@ router.get('/folder/view',
     } catch (error) {
         return ResponseHandler.error(res);
     }
+})
 
+router.patch('/folder/update', 
+    verifyToken, 
+    Validator.classValidator(UpdateFolderDTO),
+    async (req, res) => {
+
+    try {
+        const payload: UpdateFolderDTO = req.body;
+        const authenticated: Authentication = req.body.verify;
+
+        await folderService.updateFolderByFolderId(payload, authenticated.getUserId());
+        return ResponseHandler.success(res);
+    } catch (error) {
+        return ResponseHandler.error(error);
+    }
 })
 
 export default router;

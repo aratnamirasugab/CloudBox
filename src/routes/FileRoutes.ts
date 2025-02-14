@@ -27,7 +27,6 @@ router.post('/file/upload/new',
         console.log(`Failed during file uploading process ${error}`);
         return ResponseHandler.error(res);
     }
-
 })
 
 export default router;

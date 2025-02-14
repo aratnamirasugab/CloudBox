@@ -111,20 +111,20 @@ export class UploadFileDTO {
 }
 
 export class FileUploadingInitiationResponse {
-    private readonly uploadId: string;
-    private readonly bucket: string;
+    private uploadId: string;
+    private presignURL: string;
 
-    constructor(uploadId: string, bucket: string) {
+    constructor(uploadId: string | undefined, presignURL: string | undefined) {
         this.uploadId = uploadId;
-        this.bucket = bucket;
+        this.presignURL = presignURL;
     }
 
     public getUploadId(): string {
         return this.uploadId;
     }
 
-    public getBucket(): string {
-        return this.bucket;
+    get presignURL(): string {
+        return this.presignURL;
     }
 }
 

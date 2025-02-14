@@ -118,3 +118,16 @@ export class ViewFolderResponse {
         this._files = value;
     }
 }
+
+export class UpdateFolderDTO {
+
+    @IsNumber()
+    @IsNotEmpty()
+    folderId: number;
+
+    @IsNumber()
+    parentFolderId: number | undefined;
+
+    @IsString()
+    name: string | undefined;
+}
