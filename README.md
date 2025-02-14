@@ -18,9 +18,11 @@
 
 ## Overview
 
-Welcome to the **Cloud File Storage System**—a fun little project I've been working on as a hobby! It's a powerful, secure, and scalable platform designed to manage your files effortlessly. Whether you're a casual developer or just someone looking for an easy way to store files, this is your go-to solution. This project is completely open-source because I'd love to share my work with whoever reading this README right now haha.
+Welcome to CloudBox, a fun and powerful open-source cloud file storage system that you can easily self-host! This project was built as a hobby, and its goal is to provide you with a simple, secure, and scalable solution for managing your files without relying on third-party services. Whether you want to keep your data private, need a personal file storage system, or just love tinkering with cloud technology, CloudBox has you covered.
 
-The system is built with modern cloud technologies, and I'm always looking to improve it. It’s designed for anyone who wants a lightweight, self-hostable file storage solution. Clone it, break it, fork it—just don't forget to share your improvements with the community. ❤️
+With a focus on easy deployment and flexibility, you can clone this repository and self-host it on your own server, VPS, or cloud platform of choice. No matter if you're using AWS, DigitalOcean, or your local machine, you can customize and scale it to fit your needs.
+
+The project is designed with simplicity and security in mind—it's packed with modern cloud technologies and provides an intuitive web interface for effortless file management. Fork it, improve it, or just use it to manage your own files—the choice is yours. ✨
 
 ---
 
