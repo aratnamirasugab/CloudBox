@@ -1,4 +1,4 @@
-# Cloud File Storage System
+# CloudBox
 
 ## Table of Contents
 1. [Overview](#overview)
@@ -22,7 +22,7 @@ Welcome to CloudBox, a fun and powerful open-source cloud file storage system th
 
 With a focus on easy deployment and flexibility, you can clone this repository and self-host it on your own server, VPS, or cloud platform of choice. No matter if you're using AWS, DigitalOcean, or your local machine, you can customize and scale it to fit your needs.
 
-The project is designed with simplicity and security in mind—it's packed with modern cloud technologies and provides an intuitive web interface for effortless file management. Fork it, improve it, or just use it to manage your own files—the choice is yours. ✨
+The project is designed with simplicity and security in mind—it's packed with modern cloud technologies and provides an intuitive web interface for effortless file management. Fork it, improve it, or just use it to manage your own files—the choice is yours.
 
 ---
 
