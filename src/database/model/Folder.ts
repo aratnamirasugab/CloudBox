@@ -1,5 +1,5 @@
 import {DataTypes, Model, Optional, Sequelize} from "sequelize";
-import {File, FileResponse} from "./File";
+import {FileResponse} from "./File";
 import {IsArray, IsNotEmpty, IsNumber, IsString} from "class-validator";
 
 /*

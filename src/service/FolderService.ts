@@ -1,7 +1,7 @@
 import {DeleteFolderResponseDTO, Folder, UpdateFolderDTO} from "../database/model/Folder";
 import {FolderRepository} from "../database/repositories/FolderRepository";
 import {FileRepository} from "../database/repositories/FileRepository";
-import {Sequelize, Transaction} from "sequelize";
+import {Transaction} from "sequelize";
 
 const folderRepository = new FolderRepository();
 const fileRepository = new FileRepository();

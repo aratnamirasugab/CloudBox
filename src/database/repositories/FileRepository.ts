@@ -3,7 +3,7 @@ import {S3Client} from "../../utils/s3Client";
 import {CompletedPart, CompleteMultipartUploadRequest, CreateMultipartUploadRequest} from "aws-sdk/clients/s3";
 import {S3} from "aws-sdk";
 import {ChunkIdETag, FinishUploadAllChunkDTO} from "../model/UploadChunk";
-import {Op, Sequelize, Transaction} from "sequelize";
+import {Op, Transaction} from "sequelize";
 import {Status} from "../../model/enum/Status";
 
 const s3Client = new S3Client().initializeS3();

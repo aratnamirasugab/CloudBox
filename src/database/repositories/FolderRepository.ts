@@ -1,5 +1,5 @@
 import {CreateFolderDTO, Folder, UpdateFolderDTO} from "../model/Folder";
-import {Op, QueryTypes, Transaction, where} from "sequelize";
+import {Op, QueryTypes, Transaction} from "sequelize";
 
 export class FolderRepository {
     async getFolderById(id: number): Promise<Folder> {

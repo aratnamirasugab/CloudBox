@@ -2,7 +2,9 @@ import express from 'express';
 import Validator from "../middleware/validator";
 import {
     CreateFolderDTO,
-    CreateFolderResponse, DeleteFolderRequestDTO, DeleteFolderResponseDTO,
+    CreateFolderResponse,
+    DeleteFolderRequestDTO,
+    DeleteFolderResponseDTO,
     Folder,
     UpdateFolderDTO,
     ViewFolderDTO,
