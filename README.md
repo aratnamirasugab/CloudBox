@@ -1,13 +1,26 @@
-
 # Cloud File Storage System
+
+## Table of Contents
+1. [Overview](#overview)
+2. [Project Phases](#project-phases)
+    - [Phase 1: MVP (Minimum Viable Product)](#phase-1-mvp-minimum-viable-product)
+    - [Phase 2: Enhanced Functionality & Security](#phase-2-enhanced-functionality--security)
+    - [Phase 3: Advanced Features & Multi-Platform Support](#phase-3-advanced-features--multi-platform-support)
+3. [Core Features](#core-features)
+4. [Security Features](#security-features)
+5. [UI & User Experience](#ui--user-experience)
+6. [Advanced Features](#advanced-features)
+7. [Getting Started](#getting-started)
+8. [Contributing](#contributing)
+9. [License](#license)
+10. [Code of Conduct](#code-of-conduct)
+11. [Contact](#contact)
 
 ## Overview
 
 Welcome to the **Cloud File Storage System**—a fun little project I've been working on as a hobby! It's a powerful, secure, and scalable platform designed to manage your files effortlessly. Whether you're a casual developer or just someone looking for an easy way to store files, this is your go-to solution. This project is completely open-source because I'd love to share my work with whoever reading this README right now haha.
 
 The system is built with modern cloud technologies, and I'm always looking to improve it. It’s designed for anyone who wants a lightweight, self-hostable file storage solution. Clone it, break it, fork it—just don't forget to share your improvements with the community. ❤️
-
----
 
 ---
 
@@ -178,8 +191,8 @@ To set up this project locally, follow the instructions below:
 
 ### Prerequisites
 
-- Node.js (for the frontend)
-- AWS S3 or MinIO account (for storage)
+- React and Node.js
+- AWS S3 or MinIO account (for blob storage)
 - PostgreSQL/MySQL database (for user and file metadata)
 
 ### Installation TODO...
