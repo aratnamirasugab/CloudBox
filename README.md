@@ -9,74 +9,166 @@ The system is built with modern cloud technologies, and I'm always looking to im
 
 ---
 
-## Key Features
+---
 
-### Core Features
+## Project Phases
+
+### Phase 1: MVP (Minimum Viable Product)
+
+**Goal:** Establish a basic file storage system.
 
 - **User Authentication & Management**
-  - Secure login with OAuth support (Google, GitHub)
-  - Role-based access control (Admin/User)
+    - Login/Registration ☑️
+    - OAuth (Google, GitHub)
+    - Role-based access control (Admin/User)
 
 - **File Upload & Management**
-  - Drag-and-drop file uploads
-  - File previews for images and PDFs
-  - Folder creation and organization
-  - Metadata display (size, type, last modified date)
-  - Basic search and filtering
+    - Drag-and-drop file upload
+    - File preview (images, PDFs)
+    - Folder and file creation & organization ☑️
+    - Basic search & filtering ☑️
+    - Metadata display (size, type, last modified date) ☑️
 
 - **Storage & Sync**
-  - Cloud-based storage options (AWS S3, MinIO)
-  - Single and multipart file upload support
+    - Cloud-based or self-hosted storage (AWS S3, MinIO, or local storage) ☑️
+    - Single and Multipart file upload ☑️
 
 - **Security & Privacy**
-  - TLS encryption for file transfers
-  - Password hashing (bcrypt)
-  - Secure file deletion with a trash bin for file recovery
+    - TLS encryption for file transfers
+    - Secure public file access (presigned URL expiry)
+    - Password hashing (bcrypt) ☑️
+    - Secure file deletion (soft delete with trash bin)
 
 - **Basic Web Interface**
-  - Responsive frontend built with React or Next.js for seamless file management
+    - React or Next.js frontend for uploading & managing files
 
 ---
 
-### Enhanced Features (Planned)
+### Phase 2: Enhanced Functionality & Security
 
-- **File Versioning**: Track changes and restore previous versions of files
-- **Resume Interrupted Uploads**: Support for resuming file uploads after network failures
-- **Full-Text Search**: Index file contents for better searchability
-- **Sharing & Collaboration**: Public/private sharing links, permissions, and password protection
-- **End-to-End Encryption**: AES-256 encryption for maximum security
-- **Access Logs & Activity Tracking**: Track file access and user activity
-- **2FA (Two-Factor Authentication)**: Add an additional layer of security for user accounts
-- **Backup & Restore**: Schedule regular backups and enable GDPR-compliant permanent file wipe
-- **Cross-Platform Support**: Apps for Android, iOS, and desktop clients (Windows, Mac, Linux)
+**Goal:** Add more advanced features and improve security.
+
+- **File Management Enhancements**
+    - File Versioning (track changes and restore previous versions)
+    - Resume Interrupted Uploads
+    - Full-Text Search (index file contents for easier search)
+
+- **Sharing & Collaboration**
+    - Public/Private File Sharing Links
+    - Set Permissions (Read, Edit, Comment)
+    - Password-Protected Sharing Links
+    - Link Expiry Dates
+
+- **Security & Privacy Upgrades**
+    - End-to-End Encryption (AES-256)
+    - Access Logs & Activity Tracking (logins, file downloads)
+    - 2FA (Two-Factor Authentication)
+
+- **Backup & Restore**
+    - Scheduled Backups
+    - Permanent File Wipe (GDPR-compliant deletion)
+
+- **Performance & Scalability**
+    - CDN Integration for Faster File Access
+    - Basic Caching Mechanism for Frequently Accessed Files
 
 ---
 
-## Phases of Development
+### Phase 3: Advanced Features & Multi-Platform Support
 
-### Phase 1: Minimum Viable Product (MVP)
+**Goal:** Make it a feature-rich and scalable cloud storage system.
 
-- User Authentication (Login/Registration)
-- File Upload & Management (Drag-and-drop, folder/file organization)
-- Cloud Storage Integration (AWS S3/MinIO)
-- Basic Security Features (TLS encryption, password hashing)
-- Simple UI built with React or Next.js
+- **Cross-Platform Support**
+    - Mobile Apps (Android & iOS)
+    - Desktop Sync Client (Windows, Mac, Linux)
 
-### Phase 2: Enhanced Features & Security
+- **Admin Dashboard & User Management**
+    - User & Storage Usage Monitoring
+    - Admin Panel for Managing Users & Permissions
 
-- File Versioning and Resume Uploads
-- Full-Text Search
-- Public/Private File Sharing with Permissions
-- End-to-End Encryption (AES-256)
-- Two-Factor Authentication (2FA)
+- **Advanced File Collaboration**
+    - Real-Time Collaboration (Google Docs-style editing, optional integration with OnlyOffice or Collabora)
+    - File Commenting & Annotations
 
-### Phase 3: Advanced Features & Cross-Platform Support
+- **Smart AI-Powered Features**
+    - AI-Based File Tagging & Organization
+    - Automated File Categorization (Docs, Images, Videos, etc.)
+    - Duplicate File Detection & Removal
 
-- Real-Time Collaboration (Document editing, integration with OnlyOffice/Collabora)
-- Mobile Apps (Android/iOS)
-- Desktop Sync Client (Windows/Mac/Linux)
-- Smart AI Features (File categorization, duplicate detection)
-- API Integrations (WebDAV/FTP, REST API, Webhooks)
+- **Integrations & API Support**
+    - WebDAV / FTP Support
+    - REST API for Automation & External Integration
+    - Webhook Notifications for File Changes
+
+---
+
+## Core Features
+
+### Feature Checklist
+
+- **User Authentication & Management**
+    - [x] Login/Registration
+    - [x] OAuth (Google, GitHub)
+    - [x] Basic role-based access control (Admin/User)
+
+- **File Upload & Management**
+    - [ ] Drag-and-drop file upload
+    - [ ] File preview (images, PDFs)
+    - [x] Folder creation & organization
+    - [x] File creation & organization
+    - [x] Basic search & filtering
+    - [x] Metadata display (size, type, last modified date)
+
+- **Storage & Sync**
+    - [x] Cloud-based or self-hosted storage (AWS S3, MinIO, or local storage)
+    - [x] Upload Single part
+    - [x] Upload Multipart
+
+- **Security & Privacy**
+    - [ ] TLS encryption for file transfers
+    - [ ] Secure public file access
+    - [x] Password hashing (bcrypt)
+    - [x] Secure file deletion (soft delete with trash bin)
+
+- **Basic Web Interface**
+    - [ ] React or Next.js frontend
+    - [ ] Simple UI for uploading & managing files
+
+---
+
+## Security Features
+
+1. **TLS Encryption for File Transfers**
+    - Ensure all file transfers are secure using TLS.
+
+2. **Password Hashing**
+    - Use bcrypt for securing passwords.
+
+3. **Secure File Deletion**
+    - Implement soft delete with the ability to restore files from the trash bin.
+
+4. **Secure Public File Access**
+    - Enforce HTTPS for file access in S3.
+
+---
+
+## UI & User Experience
+
+- **React or Next.js Frontend**
+    - Develop a simple, user-friendly interface that allows users to upload and manage files effortlessly.
+
+---
+
+## Advanced Features
+
+- **Real-Time Collaboration**
+    - Enable users to collaborate on files in real-time with integration options for platforms like OnlyOffice or Collabora.
+
+- **AI-Based File Tagging & Organization**
+    - Implement AI to automatically tag and categorize files for easier management.
+
+- **Mobile & Desktop Sync**
+    - Create mobile apps for iOS and Android and a sync client for desktop platforms (Windows, Mac, Linux).
 
 ---
 
@@ -90,7 +182,7 @@ To set up this project locally, follow the instructions below:
 - AWS S3 or MinIO account (for storage)
 - PostgreSQL/MySQL database (for user and file metadata)
 
-### Installation
+### Installation TODO...
 
 1. **Clone the repository**:
    ```bash
@@ -160,17 +252,7 @@ By participating in this project, you agree to follow our [Code of Conduct](CODE
 
 ---
 
-## Acknowledgements
-
-- **AWS S3** for scalable cloud storage.
-- **MinIO** for self-hosted object storage.
-- **React** and **Next.js** for the web frontend.
-- **bcrypt** for secure password hashing.
-- **AES-256** for file encryption.
-
----
-
 ## Contact
 
-For any questions or inquiries, feel free to contact me via GitHub Issues or by emailing me at [officialbagus15@gmail.com](mailto:your-email@example.com).
+For any questions or inquiries, feel free to contact me via GitHub Issues or by emailing me at [officialbagus15@gmail.com](mailto:officialbagus15@gmail.com).
 
