@@ -33,29 +33,29 @@ The project is designed with simplicity and security in mind—it's packed with 
 **Goal:** Establish a basic file storage system.
 
 - **User Authentication & Management**
-    - Login/Registration ☑️
-    - OAuth (Google, GitHub)
-    - Role-based access control (Admin/User)
+    - [x] Login/Registration
+    - [ ] OAuth (Google, GitHub)
+    - [ ] Role-based access control (Admin/User)
 
 - **File Upload & Management**
-    - Drag-and-drop file upload
-    - File preview (images, PDFs)
-    - Folder and file creation & organization ☑️
-    - Basic search & filtering ☑️
-    - Metadata display (size, type, last modified date) ☑️
+    - [ ] Drag-and-drop file upload
+    - [ ] File preview (images, PDFs)
+    - [x] Folder and file creation & organization
+    - [x] Basic search & filtering 
+    - [x] Metadata display (size, type, last modified date)
 
 - **Storage & Sync**
-    - Cloud-based or self-hosted storage (AWS S3, MinIO, or local storage) ☑️
-    - Single and Multipart file upload ☑️
+    - [x] Cloud-based or self-hosted storage (AWS S3, MinIO, or local storage)
+    - [x] Single and Multipart file upload
 
 - **Security & Privacy**
-    - TLS encryption for file transfers
-    - Secure public file access (presigned URL expiry)
-    - Password hashing (bcrypt) ☑️
-    - Secure file deletion (soft delete with trash bin)
+    - [ ] TLS encryption for file transfers
+    - [ ] Secure public file access (presigned URL expiry)
+    - [x] Password hashing (bcrypt)
+    - [x] Secure file deletion (soft delete with trash bin)
 
 - **Basic Web Interface**
-    - React or Next.js frontend for uploading & managing files
+    - [ ] React or Next.js frontend for uploading & managing files
 
 ---
 
@@ -64,28 +64,28 @@ The project is designed with simplicity and security in mind—it's packed with 
 **Goal:** Add more advanced features and improve security.
 
 - **File Management Enhancements**
-    - File Versioning (track changes and restore previous versions)
-    - Resume Interrupted Uploads
-    - Full-Text Search (index file contents for easier search)
+    - [ ] File Versioning (track changes and restore previous versions)
+    - [ ] Resume Interrupted Uploads
+    - [ ] Full-Text Search (index file contents for easier search)
 
 - **Sharing & Collaboration**
-    - Public/Private File Sharing Links
-    - Set Permissions (Read, Edit, Comment)
-    - Password-Protected Sharing Links
-    - Link Expiry Dates
+    - [ ] Public/Private File Sharing Links
+    - [ ] Set Permissions (Read, Edit, Comment)
+    - [ ] Password-Protected Sharing Links
+    - [ ] Link Expiry Dates
 
 - **Security & Privacy Upgrades**
-    - End-to-End Encryption (AES-256)
-    - Access Logs & Activity Tracking (logins, file downloads)
-    - 2FA (Two-Factor Authentication)
+    - [ ] End-to-End Encryption (AES-256)
+    - [ ] Access Logs & Activity Tracking (logins, file downloads)
+    - [ ] 2FA (Two-Factor Authentication)
 
 - **Backup & Restore**
-    - Scheduled Backups
-    - Permanent File Wipe (GDPR-compliant deletion)
+    - [ ] Scheduled Backups
+    - [ ] Permanent File Wipe (GDPR-compliant deletion)
 
 - **Performance & Scalability**
-    - CDN Integration for Faster File Access
-    - Basic Caching Mechanism for Frequently Accessed Files
+    - [ ] CDN Integration for Faster File Access
+    - [ ] Basic Caching Mechanism for Frequently Accessed Files
 
 ---
 
@@ -94,62 +94,29 @@ The project is designed with simplicity and security in mind—it's packed with 
 **Goal:** Make it a feature-rich and scalable cloud storage system.
 
 - **Cross-Platform Support**
-    - Mobile Apps (Android & iOS)
-    - Desktop Sync Client (Windows, Mac, Linux)
+    - [ ] Mobile Apps (Android & iOS)
+    - [ ] Desktop Sync Client (Windows, Mac, Linux)
 
 - **Admin Dashboard & User Management**
-    - User & Storage Usage Monitoring
-    - Admin Panel for Managing Users & Permissions
+    - [ ] User & Storage Usage Monitoring
+    - [ ] Admin Panel for Managing Users & Permissions
 
 - **Advanced File Collaboration**
-    - Real-Time Collaboration (Google Docs-style editing, optional integration with OnlyOffice or Collabora)
-    - File Commenting & Annotations
+    - [ ] Real-Time Collaboration (Google Docs-style editing, optional integration with OnlyOffice or Collabora)
+    - [ ] File Commenting & Annotations
 
 - **Smart AI-Powered Features**
-    - AI-Based File Tagging & Organization
-    - Automated File Categorization (Docs, Images, Videos, etc.)
-    - Duplicate File Detection & Removal
+    - [ ] AI-Based File Tagging & Organization
+    - [ ] Automated File Categorization (Docs, Images, Videos, etc.)
+    - [ ] Duplicate File Detection & Removal
 
 - **Integrations & API Support**
-    - WebDAV / FTP Support
-    - REST API for Automation & External Integration
-    - Webhook Notifications for File Changes
+    - [ ] WebDAV / FTP Support
+    - [ ] REST API for Automation & External Integration
+    - [ ] Webhook Notifications for File Changes
 
 ---
 
-## Core Features
-
-### Feature Checklist
-
-- **User Authentication & Management**
-    - [x] Login/Registration
-    - [x] OAuth (Google, GitHub)
-    - [x] Basic role-based access control (Admin/User)
-
-- **File Upload & Management**
-    - [ ] Drag-and-drop file upload
-    - [ ] File preview (images, PDFs)
-    - [x] Folder creation & organization
-    - [x] File creation & organization
-    - [x] Basic search & filtering
-    - [x] Metadata display (size, type, last modified date)
-
-- **Storage & Sync**
-    - [x] Cloud-based or self-hosted storage (AWS S3, MinIO, or local storage)
-    - [x] Upload Single part
-    - [x] Upload Multipart
-
-- **Security & Privacy**
-    - [ ] TLS encryption for file transfers
-    - [ ] Secure public file access
-    - [x] Password hashing (bcrypt)
-    - [x] Secure file deletion (soft delete with trash bin)
-
-- **Basic Web Interface**
-    - [ ] React or Next.js frontend
-    - [ ] Simple UI for uploading & managing files
-
----
 
 ## Security Features
 
@@ -212,11 +179,11 @@ To set up this project locally, follow the instructions below:
 
 3. **Configure environment variables**:
    Set up the following environment variables for AWS S3/MinIO and database configurations:
-   - `AWS_ACCESS_KEY_ID`
-   - `AWS_SECRET_ACCESS_KEY`
-   - `AWS_S3_BUCKET_NAME`
-   - `DATABASE_URL`
-   
+    - `AWS_ACCESS_KEY_ID`
+    - `AWS_SECRET_ACCESS_KEY`
+    - `AWS_S3_BUCKET_NAME`
+    - `DATABASE_URL`
+
 4. **Run the application**:
    ```bash
    npm start
