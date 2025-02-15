@@ -2,8 +2,11 @@ import {DataTypes, Model, Optional, Sequelize} from "sequelize";
 
 interface TrashBinAttributes {
     id: number;
-    userId: number;
+    parentId: number;
+    parentType: string;
     objectId: number;
+    userId: number;
+    name: string;
     type: string;
     createdAt: Date;
     isDeleted: boolean;
@@ -13,8 +16,11 @@ interface TrashBinCreationAttributes extends Optional<TrashBinAttributes, 'id'> 
 
 export class TrashBin extends Model<TrashBinAttributes, TrashBinCreationAttributes> implements TrashBinAttributes {
     id: number;
-    userId: number;
+    parentType: string;
+    parentId: number;
     objectId: number;
+    userId: number;
+    name: string;
     type: string;
     createdAt: Date;
     isDeleted: boolean;
@@ -30,8 +36,20 @@ export class TrashBin extends Model<TrashBinAttributes, TrashBinCreationAttribut
                 type: DataTypes.INTEGER,
                 allowNull: false
             },
+            parentId: {
+                type: DataTypes.INTEGER,
+                allowNull: true
+            },
+            parentType: {
+                type: DataTypes.STRING,
+                allowNull: false
+            },
             objectId: {
                 type: DataTypes.INTEGER,
+                allowNull: false
+            },
+            name: {
+                type: DataTypes.STRING,
                 allowNull: false
             },
             type: {
@@ -56,4 +74,20 @@ export class TrashBin extends Model<TrashBinAttributes, TrashBinCreationAttribut
 
 export function initializeTrashBinTable(sequelize: Sequelize) {
     TrashBin.initialize(sequelize);
+}
+
+export class TrashItem {
+    id: number;
+    name: string;
+    type: string;
+    parentId: number | null;
+    children: TrashItem[];
+
+    constructor(id: number, name: string, type: string, parentId: number | null, children: TrashItem[]) {
+        this.id = id;
+        this.name = name;
+        this.type = type;
+        this.parentId = parentId;
+        this.children = children;
+    }
 }

@@ -108,6 +108,17 @@ export class FileRepository {
         return resultFileIds;
     }
 
+    async getFileWithIdUserId(fileId: number, userId: number): Promise<File> {
+        return await File.findOne({
+            where: {
+                id: fileId,
+                userId: userId,
+                uploadStatus: Status.FINISHED.toString(),
+                isDeleted: true
+            } as any
+        })
+    }
+
 
     /*
     * S3 Related-Queries

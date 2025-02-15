@@ -81,5 +81,16 @@ export class FolderRepository {
         })
     }
 
+    async getFolderWithIdUserId(folderId: number, userId: number): Promise<Folder> {
+        return await Folder.findOne({
+            where: {
+                id: folderId,
+                isDeleted: true,
+                userId: userId
+            } as any
+        })
+
+    }
+
 
 }
