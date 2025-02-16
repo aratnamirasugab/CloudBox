@@ -60,7 +60,7 @@ export class UploadChunkService {
     }
 
     async notifyAllChunkCompleted(payload: FinishUploadAllChunkDTO, userId: number):
-            Promise<CompleteUploadChunkResponse> {
+        Promise<CompleteUploadChunkResponse> {
 
         const existingFile: File = await fileRepository.findById(payload.fileId);
         if (!existingFile || existingFile.userId !== userId) {
@@ -103,6 +103,7 @@ export class UploadChunkService {
             throw new Error('Internal Server Error');
         }
 
+        // TODO: separate using factory method.
         // S3 API Call to Complete Multipart Upload.
         let blobLink: string = undefined;
         try {
