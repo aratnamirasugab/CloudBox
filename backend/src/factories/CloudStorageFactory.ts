@@ -14,7 +14,9 @@ export class CloudStorageFactory {
                         secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
                     }
                 });
-                return new AWSS3StorageStrategy(s3Client, process.env.AWS_S3_BUCKET_NAME, process.env.AWS_S3_EXPIRY as number);
+
+                const expiresInMs: number = process.env.AWS_S3_EXPIRY as unknown as number;
+                return new AWSS3StorageStrategy(s3Client, process.env.AWS_S3_BUCKET_NAME, expiresInMs);
             default:
                 throw new Error('Unsupported CloudProviderType');
         }

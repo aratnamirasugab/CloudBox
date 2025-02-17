@@ -21,5 +21,15 @@ export class TrashBinRepository {
             }
         })
     }
+    
+    async getTrashByUserIdRootLevel(userId: number): Promise<TrashBin[]> {
+        return await TrashBin.findAll({
+            where: {
+                userId: userId,
+                parentId: 0,
+                isDeleted: false
+            }
+        })
+    }
 
 }

@@ -53,6 +53,7 @@ The project is designed with simplicity and security in mind—it's packed with 
     - [ ] Secure public file access (presigned URL expiry)
     - [x] Password hashing (bcrypt)
     - [x] Secure file deletion (soft delete with trash bin)
+    - [x] Trash Bin view & restore
 
 - **Basic Web Interface**
     - [ ] React or Next.js frontend for uploading & managing files

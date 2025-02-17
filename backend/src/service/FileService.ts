@@ -9,13 +9,17 @@ import {CreateUploadChunk} from "../database/model/UploadChunk";
 import {UploadChunkRepository} from "../database/repositories/UploadChunkRepository";
 import {FileRepository} from "../database/repositories/FileRepository";
 import {UploadSessionRepository} from "../database/repositories/UploadSessionRepository";
-import {S3} from "aws-sdk";
+import { CloudStorageService } from './cloudStorage/CloudStorageService';
+import { CloudStorageRequest } from '../model/CloudStorageRequest';
+import { CloudStorageResponse } from '../model/CloudStorageResponse';
 
 const uploadChunkRepository = new UploadChunkRepository();
 const fileRepository = new FileRepository();
 const uploadSessionRepository = new UploadSessionRepository();
 
-class FileService {
+const cloudStorageStrategy = CloudStorageService.getStrategy();
+
+export class FileService {
 
     async initiateUpload(payload: FileUploadingInitialization): Promise<FileUploadingInitiationResponse> {
 
@@ -48,22 +52,26 @@ class FileService {
             await Promise.all(chunks);
         }
 
+
         // if file size is < 100MB use single upload API.
+        const cloudPayload: CloudStorageRequest = new CloudStorageRequest({
+            key: file.id + '_' + file.name,
+            contentType: file.mimeType
+        });
+
         if (payload.size < 100 * 1024 * 1024) { // 100MB
-            try {
-                const preSignedURL: string = await fileRepository.getSingleUploadUrl(file.mimeType, file.name);
-                return new FileUploadingInitiationResponse(undefined, preSignedURL);
-            } catch (error) {
+            const response: CloudStorageResponse = await cloudStorageStrategy.getSignedURLSingleUpload(cloudPayload);
+            if (response.error) {
                 throw new Error('Internal Server Error');
             }
+
         } else {
-            try {
-                const multipartResponse: S3.Types.CreateMultipartUploadOutput =
-                    await fileRepository.initiateMultipartUploadS3(file.mimeType, file.name);
-                return new FileUploadingInitiationResponse(multipartResponse.UploadId, undefined);
-            } catch (error) {
+            const response: CloudStorageResponse = await cloudStorageStrategy.createMultipartUpload(cloudPayload);
+            if (response.error) {
                 throw new Error('Internal Server Error');
             }
+
+            return new FileUploadingInitiationResponse(response.uploadId, undefined);
         }
     }
 
@@ -83,12 +91,10 @@ class FileService {
             return;
         }
 
-        const [affectedCount] = await fileRepository.deleteFilesWithIds(payload.fileIds, payload.currentFolderId);
+        const [affectedCount] = await fileRepository.deleteFilesWithIds(payload.fileIds, payload.currentFolderId, undefined);
         if (affectedCount === 0) {
             console.error(`Files failed to deleted. Ids : ${payload.fileIds}`);
             throw new Error('Internal Server Error');
         }
     }
 }
-
-export default FileService;

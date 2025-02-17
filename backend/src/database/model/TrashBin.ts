@@ -23,7 +23,7 @@ export class TrashBin extends Model<TrashBinAttributes, TrashBinCreationAttribut
     name: string;
     type: string;
     createdAt: Date;
-    isDeleted: boolean;
+    isDeleted: boolean; // if trash has been deleted on the blob storage
 
     public static initialize(sequelize: Sequelize) {
         TrashBin.init({

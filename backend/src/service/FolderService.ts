@@ -47,7 +47,7 @@ export class FolderService {
         const transaction: Transaction = await Folder.sequelize.transaction();
         try {
             let filesDeleted: number = 0;
-            for (const folderId:number of folderIds) {
+            for (const folderId of folderIds) {
                 const fileIds: number[] = await fileRepository.getFilesIdByFolderId(folderId, userId);
 
                 if (!fileIds || fileIds.length === 0) {
@@ -67,7 +67,7 @@ export class FolderService {
             // Rollback the transaction if any error occurs
             await transaction.rollback();
 
-            throw new Error('Internal Server Error');
+            throw new Error('Internal Server Error'); 
         }
     }
 

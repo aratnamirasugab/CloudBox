@@ -210,37 +210,17 @@ export class FinishUploadAllChunkDTO {
 
     @IsNotEmpty()
     @IsArray()
-    private _chunkIdETagList: ChunkIdETag[];
+    chunkIdETagList: ChunkIdETag[];
 
     @IsNotEmpty()
     @IsNumber()
-    private _fileId: number;
+    fileId: number;
 
     @IsNotEmpty()
     @IsString()
-    private _uploadId: string;
+    fileName: string;
 
-    get chunkIdETagList(): ChunkIdETag[] {
-        return this._chunkIdETagList;
-    }
-
-    set chunkIdETagList(value: ChunkIdETag[]) {
-        this._chunkIdETagList = value;
-    }
-
-    get fileId(): number {
-        return this._fileId;
-    }
-
-    set fileId(value: number) {
-        this._fileId = value;
-    }
-
-    get uploadId(): string {
-        return this._uploadId;
-    }
-
-    set uploadId(value: string) {
-        this._uploadId = value;
-    }
+    @IsNotEmpty()
+    @IsString()
+    uploadId: string;
 }

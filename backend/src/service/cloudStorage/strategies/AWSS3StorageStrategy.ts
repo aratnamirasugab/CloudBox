@@ -56,8 +56,7 @@ export class AWSS3StorageStrategy implements CloudStorageStrategy {
                 }
             };
 
-            const output:S3.Types.CompleteMultipartUploadOutput =
-                await this.s3Client.completeMultipartUpload(request).promise();
+            const output:S3.Types.CompleteMultipartUploadOutput = await this.s3Client.completeMultipartUpload(request).promise();
             return new CloudStorageResponse({
                 location: output.Location
             })

@@ -23,7 +23,7 @@ router.post('/file/upload/new',
         const uploadFileDTO: UploadFileDTO = req.body;
         const authenticated: Authentication = req.body.verify;
 
-        const fileInitializationPayload: FileUploadingInitialization =
+        const fileInitializationPayload: FileUploadingInitialization = 
             new FileUploadingInitialization(uploadFileDTO, authenticated.getUserId());
         const filteredResponse: FileUploadingInitiationResponse =
             await fileService.initiateUpload(fileInitializationPayload);

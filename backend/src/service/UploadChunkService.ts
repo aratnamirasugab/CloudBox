@@ -10,11 +10,16 @@ import {File} from "../database/model/File";
 import {Status} from "../model/enum/Status";
 import {UploadSessionRepository} from "../database/repositories/UploadSessionRepository";
 import {UploadSession} from "../database/model/UploadSession";
-import {S3} from "aws-sdk";
+import { CloudStorageStrategy } from "./cloudStorage/CloudStorageStrategy";
+import { CloudStorageService } from "./cloudStorage/CloudStorageService";
+import { CloudStorageRequest } from "../model/CloudStorageRequest";
+import { CloudStorageResponse } from "../model/CloudStorageResponse";
 
 const uploadChunkRepository = new UploadChunkRepository();
 const fileRepository = new FileRepository();
 const uploadSessionRepository = new UploadSessionRepository();
+
+const cloudStorageStrategy: CloudStorageStrategy = CloudStorageService.getStrategy();
 
 export class UploadChunkService {
 
@@ -103,19 +108,18 @@ export class UploadChunkService {
             throw new Error('Internal Server Error');
         }
 
-        // TODO: separate using factory method.
-        // S3 API Call to Complete Multipart Upload.
-        let blobLink: string = undefined;
-        try {
-            const completeMultipartResponse: S3.Types.CompleteMultipartUploadOutput =
-                await fileRepository.completeMultipartUploadS3(payload);
-            blobLink = completeMultipartResponse.Location;
-        } catch (error) {
-            console.error(error);
+        const cloudPayload: CloudStorageRequest = new CloudStorageRequest({
+            key: payload.fileId + '_' + payload.fileName,
+            uploadId: payload.uploadId,
+            chunkIdETag: payload.chunkIdETagList
+        })
+        
+        const response: CloudStorageResponse = await cloudStorageStrategy.completeMultipartUpload(cloudPayload);
+        if (response.error) {
             throw new Error('Internal Server Error');
         }
 
-        existingFile.blobLink = blobLink;
+        existingFile.blobLink = response.location;
         existingFile.updatedAt = new Date();
         await fileRepository.updateWithFileId(existingFile.id, existingFile);
 

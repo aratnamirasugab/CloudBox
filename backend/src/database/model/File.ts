@@ -120,117 +120,36 @@ export class UploadFileDTO {
 }
 
 export class FileUploadingInitiationResponse {
-    private uploadId: string;
-    private preSignURL: string;
+    uploadId: string;
+    preSignURL: string;
 
     constructor(uploadId: string | undefined, preSignURL: string | undefined) {
         this.uploadId = uploadId;
         this.preSignURL = preSignURL;
     }
-
-    public getUploadId(): string {
-        return this.uploadId;
-    }
-
-    get preSignURL(): string {
-        return this.preSignURL;
-    }
 }
 
 export class FileUploadingInitialization {
-    private _folderId: number;
-    private _userId: number;
-    private _name: string;
-    private _mimeType: string;
-    private _size: number;
-    private _totalChunks: number;
-    private _uploadStatus: string;
-    private _createdAt: Date;
-    private _isDeleted: boolean;
+    folderId: number;
+    userId: number;
+    name: string;
+    mimeType: string;
+    size: number;
+    totalChunks: number;
+    uploadStatus: string;
+    createdAt: Date;
+    isDeleted: boolean;
 
     constructor(uploadFileDTO: UploadFileDTO, userId: number) {
-        this._folderId = uploadFileDTO.folderId;
-        this._userId = userId;
-        this._name = uploadFileDTO.name;
-        this._mimeType = uploadFileDTO.mimeType;
-        this._size = uploadFileDTO.size;
-        this._totalChunks = uploadFileDTO.totalChunks;
-        this._uploadStatus = Status.INITIALIZED.toString();
-        this._createdAt = new Date();
-        this._isDeleted = false;
-    }
-
-
-    get folderId(): number {
-        return this._folderId;
-    }
-
-    set folderId(value: number) {
-        this._folderId = value;
-    }
-
-    get userId(): number {
-        return this._userId;
-    }
-
-    set userId(value: number) {
-        this._userId = value;
-    }
-
-    get name(): string {
-        return this._name;
-    }
-
-    set name(value: string) {
-        this._name = value;
-    }
-
-    get mimeType(): string {
-        return this._mimeType;
-    }
-
-    set mimeType(value: string) {
-        this._mimeType = value;
-    }
-
-    get size(): number {
-        return this._size;
-    }
-
-    set size(value: number) {
-        this._size = value;
-    }
-
-    get uploadStatus(): string {
-        return this._uploadStatus;
-    }
-
-    set uploadStatus(value: string) {
-        this._uploadStatus = value;
-    }
-
-    get createdAt(): Date {
-        return this._createdAt;
-    }
-
-    set createdAt(value: Date) {
-        this._createdAt = value;
-    }
-
-    get isDeleted(): boolean {
-        return this._isDeleted;
-    }
-
-    set isDeleted(value: boolean) {
-        this._isDeleted = value;
-    }
-
-    get totalChunks(): number {
-        return this._totalChunks;
-    }
-
-    set totalChunks(value: number) {
-        this._totalChunks = value;
+        this.folderId = uploadFileDTO.folderId;
+        this.userId = userId;
+        this.name = uploadFileDTO.name;
+        this.mimeType = uploadFileDTO.mimeType;
+        this.size = uploadFileDTO.size;
+        this.totalChunks = uploadFileDTO.totalChunks;
+        this.uploadStatus = Status.INITIALIZED.toString();
+        this.createdAt = new Date();
+        this.isDeleted = false;
     }
 }
 

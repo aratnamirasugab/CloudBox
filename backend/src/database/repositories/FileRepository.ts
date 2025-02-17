@@ -54,7 +54,7 @@ export class FileRepository {
     async getFileWithIdsUserIds(folderId: number, fileIds: number[], userId: number): Promise<File[]> {
         return await File.findAll({
             where: {
-                fileId: {
+                id: {
                     [Op.in]: fileIds
                 },
                 folderId: folderId,
@@ -66,7 +66,7 @@ export class FileRepository {
     }
 
     async deleteFilesWithIds(fileIds: number[], folderId: number, transaction: Transaction | undefined)
-        : Promise<[affectedCount: number, affectedRows: File[]]> {
+        : Promise<[affectedCount: number]> {
         return await File.update({
             isDeleted: true
         }, {
@@ -111,6 +111,17 @@ export class FileRepository {
                 uploadStatus: Status.FINISHED.toString(),
                 isDeleted: true
             } as any
+        })
+    }
+
+    async getFilesWithUserIdRootLevel(userId: number): Promise<File[]> {
+        return await File.findAll({
+            where: {
+                userId: userId,
+                folderId: 0,
+                uploadStatus: Status.FINISHED.toString(),
+                isDeleted: true
+            }
         })
     }
 }
