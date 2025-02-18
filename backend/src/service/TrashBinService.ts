@@ -1,10 +1,10 @@
 import {TrashBin, TrashItem} from "../database/model/TrashBin";
-import { FileRepository } from "../database/repositories/FileRepository";
-import { FolderRepository } from "../database/repositories/FolderRepository";
+import {FileRepository} from "../database/repositories/FileRepository";
+import {FolderRepository} from "../database/repositories/FolderRepository";
 import {TrashBinRepository} from "../database/repositories/TrashBinRepository";
-import { RestoreTrashResponse } from "../model/RestoreTrashResponse";
-import { File } from "../database/model/File";
-import { Folder } from "../database/model/Folder";
+import {RestoreTrashResponse} from "../model/RestoreTrashResponse";
+import {File} from "../database/model/File";
+import {Folder} from "../database/model/Folder";
 
 const trashBinRepository = new TrashBinRepository();
 const fileRepository = new FileRepository();
@@ -36,15 +36,9 @@ export class TrashBinService {
         return rootFolder;
     }
 
-    async restoreTrash(userId: number, trashIds: number[]): Promise<RestoreTrashResponse> {
-        
+    async pushFolderFileTrashBin(userId: number, folderId: number): Promise<void> {
 
-        const trashes: TrashBin[] = await trashBinRepository.getTrashByUserIdRootLevel(userId);
-        const files: File[] = await fileRepository.getFilesWithUserIdRootLevel(userId);
-        const folders: Folder[] = await folderRepository
-
-
-    
+        const subFolders: Folder[] = await folderRepository.getAllSubFolderIds(folderId, userId);
 
     }
 }

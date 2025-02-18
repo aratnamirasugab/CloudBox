@@ -81,20 +81,12 @@ export class CreateFolderDTO {
 }
 
 export class CreateFolderResponse {
-    private readonly parentFolderId: number;
-    private readonly folderId: number;
+    parentFolderId: number;
+    folderId: number;
 
     constructor(folder: Folder) {
         this.parentFolderId = folder.parentFolderId;
         this.folderId = folder.id;
-    }
-
-    public getParentFolderId(): number {
-        return this.parentFolderId;
-    }
-
-    public getFolderId(): number {
-        return this.folderId;
     }
 }
 
@@ -103,28 +95,12 @@ export class ViewFolderDTO {
 }
 
 export class ViewFolderResponse {
-    private _folders: FolderResponse[];
-    private _files: FileResponse[];
+    folders: FolderResponse[];
+    files: FileResponse[];
 
     constructor(folders: FolderResponse[], files: FileResponse[]) {
-        this._folders = folders;
-        this._files = files;
-    }
-
-    get folders(): FolderResponse[] {
-        return this._folders;
-    }
-
-    set folders(value: FolderResponse[]) {
-        this._folders = value;
-    }
-
-    get files(): FileResponse[] {
-        return this._files;
-    }
-
-    set files(value: FileResponse[]) {
-        this._files = value;
+        this.folders = folders;
+        this.files = files;
     }
 }
 
@@ -147,8 +123,8 @@ export class DeleteFolderRequestDTO {
 }
 
 export class DeleteFolderResponseDTO {
-    private folderAmount: number;
-    private fileAmount: number;
+    folderAmount: number;
+    fileAmount: number;
 
     constructor(folderAmount: number, fileAmount: number) {
         this.folderAmount = folderAmount;

@@ -10,10 +10,10 @@ import {File} from "../database/model/File";
 import {Status} from "../model/enum/Status";
 import {UploadSessionRepository} from "../database/repositories/UploadSessionRepository";
 import {UploadSession} from "../database/model/UploadSession";
-import { CloudStorageStrategy } from "./cloudStorage/CloudStorageStrategy";
-import { CloudStorageService } from "./cloudStorage/CloudStorageService";
-import { CloudStorageRequest } from "../model/CloudStorageRequest";
-import { CloudStorageResponse } from "../model/CloudStorageResponse";
+import {CloudStorageStrategy} from "./cloudStorage/CloudStorageStrategy";
+import {CloudStorageService} from "./cloudStorage/CloudStorageService";
+import {CloudStorageRequest} from "../model/CloudStorageRequest";
+import {CloudStorageResponse} from "../model/CloudStorageResponse";
 
 const uploadChunkRepository = new UploadChunkRepository();
 const fileRepository = new FileRepository();

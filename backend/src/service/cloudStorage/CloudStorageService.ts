@@ -1,4 +1,4 @@
-import { CloudStorageStrategy } from "./CloudStorageStrategy";
+import {CloudStorageStrategy} from "./CloudStorageStrategy";
 
 export class CloudStorageService {
 

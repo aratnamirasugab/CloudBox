@@ -9,9 +9,9 @@ import {CreateUploadChunk} from "../database/model/UploadChunk";
 import {UploadChunkRepository} from "../database/repositories/UploadChunkRepository";
 import {FileRepository} from "../database/repositories/FileRepository";
 import {UploadSessionRepository} from "../database/repositories/UploadSessionRepository";
-import { CloudStorageService } from './cloudStorage/CloudStorageService';
-import { CloudStorageRequest } from '../model/CloudStorageRequest';
-import { CloudStorageResponse } from '../model/CloudStorageResponse';
+import {CloudStorageService} from './cloudStorage/CloudStorageService';
+import {CloudStorageRequest} from '../model/CloudStorageRequest';
+import {CloudStorageResponse} from '../model/CloudStorageResponse';
 
 const uploadChunkRepository = new UploadChunkRepository();
 const fileRepository = new FileRepository();
@@ -52,7 +52,6 @@ export class FileService {
             await Promise.all(chunks);
         }
 
-
         // if file size is < 100MB use single upload API.
         const cloudPayload: CloudStorageRequest = new CloudStorageRequest({
             key: file.id + '_' + file.name,
@@ -85,16 +84,24 @@ export class FileService {
     }
 
     async deleteFileByFileIds(payload: DeleteFileRequestDTO, userId: number): Promise<void> {
-        const existingFiles: File[] =
-            await fileRepository.getFileWithIdsUserIds(payload.currentFolderId, payload.fileIds, userId);
+
+        const existingFiles: File[] = await fileRepository.getFilesWithIdsUserIds(
+            payload.currentFolderId, payload.fileIds, userId
+        );
+
         if (!existingFiles) {
             return;
         }
 
-        const [affectedCount] = await fileRepository.deleteFilesWithIds(payload.fileIds, payload.currentFolderId, undefined);
-        if (affectedCount === 0) {
+        const [fileDeletedAmount] = await fileRepository.deleteFilesWithIds(
+            payload.fileIds, payload.currentFolderId, undefined
+        );
+
+        if (fileDeletedAmount === 0) {
             console.error(`Files failed to deleted. Ids : ${payload.fileIds}`);
             throw new Error('Internal Server Error');
         }
+
+
     }
 }

@@ -10,10 +10,10 @@ import FolderRoutes from "./routes/FolderRoutes";
 import UserRoutes from "./routes/UserRoutes";
 import UploadChunkRoutes from "./routes/UploadChunkRoute"
 import SearchRoutes from "./routes/SearchRoute"
-import { CloudStorageFactory } from './factories/CloudStorageFactory';
-import { CloudProviderType } from './model/enum/CloudProvider';
-import { CloudStorageStrategy } from './service/cloudStorage/CloudStorageStrategy';
-import { CloudStorageService } from './service/cloudStorage/CloudStorageService';
+import {CloudStorageFactory} from './factories/CloudStorageFactory';
+import {CloudProviderType} from './model/enum/CloudProvider';
+import {CloudStorageStrategy} from './service/cloudStorage/CloudStorageStrategy';
+import {CloudStorageService} from './service/cloudStorage/CloudStorageService';
 
 dotenv.config()
 

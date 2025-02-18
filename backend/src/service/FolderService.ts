@@ -2,9 +2,12 @@ import {DeleteFolderResponseDTO, Folder, UpdateFolderDTO} from "../database/mode
 import {FolderRepository} from "../database/repositories/FolderRepository";
 import {FileRepository} from "../database/repositories/FileRepository";
 import {Transaction} from "sequelize";
+import {FolderTrashRepository} from "../database/repositories/FolderTrashRepository";
+import {CreateFolderTrashPayload} from "../model/CreateFolderTrashPayload";
 
 const folderRepository = new FolderRepository();
 const fileRepository = new FileRepository();
+const folderTrashRepository = new FolderTrashRepository();
 
 export class FolderService {
 
@@ -55,12 +58,19 @@ export class FolderService {
                     continue; // skip to next iteration if no files are found
                 }
 
-                const [affectedCount] = await fileRepository.deleteFilesWithIds(fileIds, folderId, transaction);
-                filesDeleted += affectedCount;
+                const [deletedFileAmount] = await fileRepository.deleteFilesWithIds(fileIds, folderId, transaction);
+                filesDeleted += deletedFileAmount;
+
+                // TODO : Change query to get folderId and its parentFolderId on the getAllSubFolderIds
+                const [createdFolderTrashAmount] = await folderTrashRepository.createNewRow(new CreateFolderTrashPayload(
+                    { folderId: folderId, userId:userId, parentFolderId: fo.der }
+                ))
             }
-            const [affectedCount] = await folderRepository.deleteFoldersWithIds(folderIds, userId, transaction);
+
+            const [deletedFolderAmount] = await folderRepository.deleteFoldersWithIds(folderIds, userId, transaction);
+
             await transaction.commit();
-            return new DeleteFolderResponseDTO(affectedCount, filesDeleted);
+            return new DeleteFolderResponseDTO(deletedFolderAmount, filesDeleted);
         } catch (error) {
             console.error('Transaction failed: ', error);
 
