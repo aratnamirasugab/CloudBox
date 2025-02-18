@@ -12,10 +12,15 @@ import {UploadSessionRepository} from "../database/repositories/UploadSessionRep
 import {CloudStorageService} from './cloudStorage/CloudStorageService';
 import {CloudStorageRequest} from '../model/CloudStorageRequest';
 import {CloudStorageResponse} from '../model/CloudStorageResponse';
+import { Transaction } from 'sequelize';
+import { DeleteFileResponse } from '../model/DeleteFileResponse';
+import { FileTrashRepository } from '../database/repositories/FileTrashRepository';
+import { CreateFileTrashPayload } from '../model/CreateFileTrashPayload';
 
 const uploadChunkRepository = new UploadChunkRepository();
 const fileRepository = new FileRepository();
 const uploadSessionRepository = new UploadSessionRepository();
+const fileTrashRepository = new FileTrashRepository();
 
 const cloudStorageStrategy = CloudStorageService.getStrategy();
 
@@ -83,25 +88,29 @@ export class FileService {
         return fileRepository.getFilesWithKey(key, userId);
     }
 
-    async deleteFileByFileIds(payload: DeleteFileRequestDTO, userId: number): Promise<void> {
+    async deleteFileByFileIds(payload: DeleteFileRequestDTO, userId: number): Promise<DeleteFileResponse> {
+        const transaction: Transaction = await File.sequelize.transaction();
+        try {
+            const existingFiles: File[] = await fileRepository.getFilesWithIdsUserIds(
+                payload.currentFolderId, payload.fileIds, userId
+            );
+            
+            await fileTrashRepository.createMultipleFileTrash(existingFiles.map(file => new CreateFileTrashPayload(
+                { fileId: file.id, folderId: file.folderId, userId: userId}
+            )),
+                transaction
+            );
 
-        const existingFiles: File[] = await fileRepository.getFilesWithIdsUserIds(
-            payload.currentFolderId, payload.fileIds, userId
-        );
-
-        if (!existingFiles) {
-            return;
-        }
-
-        const [fileDeletedAmount] = await fileRepository.deleteFilesWithIds(
-            payload.fileIds, payload.currentFolderId, undefined
-        );
-
-        if (fileDeletedAmount === 0) {
-            console.error(`Files failed to deleted. Ids : ${payload.fileIds}`);
+            const [deletedFileAmount] = await fileRepository.deleteFilesWithIds(
+                payload.fileIds, payload.currentFolderId, transaction
+            );
+        
+            await transaction.commit();
+            return new DeleteFileResponse(deletedFileAmount);
+        } catch (error) {
+            console.error(`Transaction is failed for file deletion process. userId: ${userId}. Error: ${error}`);
+            await transaction.rollback();
             throw new Error('Internal Server Error');
         }
-
-
     }
 }

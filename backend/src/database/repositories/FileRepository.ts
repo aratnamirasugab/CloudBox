@@ -68,7 +68,8 @@ export class FileRepository {
     async deleteFilesWithIds(fileIds: number[], folderId: number, transaction: Transaction | undefined)
         : Promise<[affectedCount: number, affectedRows: File[]]> {
         return await File.update({
-            isDeleted: true
+            isDeleted: true,
+            updatedAt: new Date()
         }, {
             returning: false,
             where: {
@@ -79,9 +80,30 @@ export class FileRepository {
                 folderId: folderId,
                 uploadStatus: Status.FINISHED.toString()
             },
-            transaction: transaction
+            transaction: transaction ?? null
         })
     }
+
+    async deleteFilesWithFilesId(fileIds: number[], userId: number, transaction: Transaction | undefined)
+        : Promise<[affectedCount: number, affectedRows: File[]]> {
+
+        if (fileIds.length === 0) return;
+
+        await File.update({
+            isDeleted: true,
+            updatedAt: new Date()
+        }, {
+            returning: false,
+            where: {
+                id: {
+                    [Op.in]: fileIds
+                },
+                userId: userId,
+                isDeleted: false
+            },
+            transaction: transaction
+        })
+    } 
 
     async getFilesIdByFolderId(folderId: number, userId: number): Promise<number[]> {
         const fileIds = await File.findAll({
@@ -121,6 +143,22 @@ export class FileRepository {
                 folderId: 0,
                 uploadStatus: Status.FINISHED.toString(),
                 isDeleted: true
+            }
+        })
+    }
+
+    async getFilesByMultipleFolderIds(folderIds: number[], userId: number): Promise<File[]> {
+
+        if (folderIds.length === 0) return [];
+
+        return await File.findAll({
+            where: {
+                folderId: {
+                    [Op.in]: folderIds
+                },
+                userId: userId,
+                uploadStatus: Status.FINISHED.toString(),
+                isDeleted: false 
             }
         })
     }

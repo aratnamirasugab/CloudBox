@@ -3,7 +3,7 @@ import verifyToken from "../middleware/token";
 import ResponseHandler from "../utils/ResponseHandler";
 import {Folder} from "../database/model/Folder";
 import {File} from "../database/model/File";
-import FileService from "../service/FileService";
+import {FileService} from "../service/FileService";
 import {FolderService} from "../service/FolderService";
 import Authentication from "../model/Authentication";
 import {SearchResults} from "../model/Search";

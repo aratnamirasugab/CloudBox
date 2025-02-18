@@ -46,22 +46,22 @@ export class FolderRepository {
         })
     }
 
-    async getAllSubFolderIds(folderId: number,  userId: number): Promise<number[]> {
+    async getAllSubFoldersByFolderId(folderId: number,  userId: number): Promise<Folder[]> {
         const query: string = `
             WITH RECURSIVE folder_hierarchy AS (
-                SELECT id FROM Folder WHERE id = :folderId, userId = :userId 
+                SELECT id, parent_folder_id FROM Folder WHERE id = :folderId, userId = :userId 
                 UNION ALL
-                SELECT f.id FROM Folder f INNER JOIN folder_hierarchy fh ON f.parent_folder_id = fh.id
+                SELECT f.id, f.parent_folder_id FROM Folder f INNER JOIN folder_hierarchy fh ON f.parent_folder_id = fh.id
             )
-            SELECT id FROM folder_hierarchy
+            SELECT id, parent_folder_id FROM folder_hierarchy
         `;
 
-        const result = await Folder.sequelize.query(query, {
+        const result: Folder[] = await Folder.sequelize.query(query, {
             replacements: { folderId, userId },
             type: QueryTypes.SELECT
         });
 
-        return result.map(row => row.id);
+        return result;
     }
 
     async deleteFoldersWithIds(folderIds: number[], userId:number, transaction: Transaction | undefined):

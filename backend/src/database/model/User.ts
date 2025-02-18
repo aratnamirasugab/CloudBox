@@ -66,57 +66,17 @@ export class CreateUserDTO {
 }
 
 export class UserCreation {
-    private _email: string;
-    private _password: string;
-    private _isDeleted: false;
-    private _createdAt: Date;
-    private _updatedAt: Date;
+    email: string;
+    password: string;
+    isDeleted: false;
+    createdAt: Date;
+    updatedAt: Date;
 
     constructor(createUserDTO: CreateUserDTO) {
-        this._email = createUserDTO.email;
-        this._password = createUserDTO.password;
-        this._isDeleted = false;
-        this._createdAt = new Date();
-        this._updatedAt = undefined;
-    }
-
-    get email(): string {
-        return this._email;
-    }
-
-    set email(value: string) {
-        this._email = value;
-    }
-
-    get password(): string {
-        return this._password;
-    }
-
-    set password(value: string) {
-        this._password = value;
-    }
-
-    get isDeleted(): false {
-        return this._isDeleted;
-    }
-
-    set isDeleted(value: false) {
-        this._isDeleted = value;
-    }
-
-    get createdAt(): Date {
-        return this._createdAt;
-    }
-
-    set createdAt(value: Date) {
-        this._createdAt = value;
-    }
-
-    get updatedAt(): Date {
-        return this._updatedAt;
-    }
-
-    set updatedAt(value: Date) {
-        this._updatedAt = value;
+        this.email = createUserDTO.email;
+        this.password = createUserDTO.password;
+        this.isDeleted = false;
+        this.createdAt = new Date();
+        this.updatedAt = undefined;
     }
 }

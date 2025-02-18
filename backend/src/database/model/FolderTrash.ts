@@ -42,7 +42,8 @@ export class FolderTrash extends Model<FolderTrashAttributes, FolderTrashCreatio
             },
             createdAt: {
                 type: DataTypes.DATE,
-                allowNull: false
+                allowNull: false,
+                defaultValue: new Date()
             },
             isHardDeleted: {
                 type: DataTypes.BOOLEAN,

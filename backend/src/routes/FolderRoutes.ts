@@ -79,8 +79,9 @@ router.delete('/folder/delete', verifyToken, Validator.classValidator(DeleteFold
         const authenticated: Authentication = req.body.verify;
         const payload: DeleteFolderRequestDTO = req.body;
 
-        const filteredResponse: DeleteFolderResponseDTO =
-            await folderService.deleteFolderByIds(payload.folderId, authenticated.getUserId());
+        const filteredResponse: DeleteFolderResponseDTO = await folderService.deleteFolderById(
+            payload.folderId, authenticated.getUserId()
+        );
         return ResponseHandler.success(res, filteredResponse);
     } catch (error) {
         return ResponseHandler.error(res);

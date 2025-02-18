@@ -10,6 +10,7 @@ import {
 } from "../database/model/File";
 import ResponseHandler from "../utils/ResponseHandler";
 import Authentication from "../model/Authentication";
+import { DeleteFileResponse } from '../model/DeleteFileResponse';
 
 const router = express.Router();
 const fileService  = new FileService();
@@ -43,8 +44,8 @@ router.delete('/file/delete',
         const payload: DeleteFileRequestDTO = req.body;
         const authenticated: Authentication = req.body.verify;
 
-        await fileService.deleteFileByFileIds(payload, authenticated.getUserId());
-        return ResponseHandler.success(res);
+        const filteredResponse: DeleteFileResponse = await fileService.deleteFileByFileIds(payload, authenticated.getUserId());
+        return ResponseHandler.success(res, filteredResponse);
     } catch (error) {
         return ResponseHandler.error(res);
     }

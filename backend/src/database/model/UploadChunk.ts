@@ -41,6 +41,9 @@ export class UploadChunk extends Model<UploadChunkAttributes, UploadChunkCreatio
                 type: DataTypes.INTEGER,
                 allowNull: false
             },
+            eTag: {
+                type: DataTypes.STRING
+            },
             isUploaded: {
                 type: DataTypes.BOOLEAN,
                 allowNull: false,
@@ -63,147 +66,50 @@ export function initializeUploadChunkTable(db : Sequelize) {
 }
 
 export class CreateUploadChunk {
-    private _fileId: number;
-    private _chunkIndex: number;
-    private _size: number;
-    private _isUploaded: boolean;
-    private _uploadedAt: Date
+    fileId: number;
+    chunkIndex: number;
+    size: number;
+    isUploaded: boolean;
+    uploadedAt: Date
     
     constructor(fileId: number, chunkIndex: number, size: number) {
-        this._fileId = fileId;
-        this._chunkIndex = chunkIndex;
-        this._size = size;
-        this._isUploaded = false;
-        this._uploadedAt = new Date();
-    }
-
-    get fileId(): number {
-        return this._fileId;
-    }
-
-    set fileId(value: number) {
-        this._fileId = value;
-    }
-
-    get chunkIndex(): number {
-        return this._chunkIndex;
-    }
-
-    set chunkIndex(value: number) {
-        this._chunkIndex = value;
-    }
-
-    get size(): number {
-        return this._size;
-    }
-
-    set size(value: number) {
-        this._size = value;
-    }
-
-    get isUploaded(): boolean {
-        return this._isUploaded;
-    }
-
-    set isUploaded(value: boolean) {
-        this._isUploaded = value;
-    }
-
-    get uploadedAt(): Date {
-        return this._uploadedAt;
-    }
-
-    set uploadedAt(value: Date) {
-        this._uploadedAt = value;
+        this.fileId = fileId;
+        this.chunkIndex = chunkIndex;
+        this.size = size;
+        this.isUploaded = false;
+        this.uploadedAt = new Date();
     }
 }
 
 export class CompleteUploadChunkDTO {
     @IsNotEmpty()
     @IsNumber()
-    private _chunkIndex: number;
+    chunkIndex: number;
 
     @IsNotEmpty()
     @IsNumber()
-    private _fileId: number;
+    fileId: number;
 
     @IsNotEmpty()
     @IsString()
-    private _etag: string;
-
-    get chunkIndex(): number {
-        return this._chunkIndex;
-    }
-
-    get fileId(): number {
-        return this._fileId;
-    }
-
-    get etag(): string {
-        return this._etag;
-    }
+    etag: string;
 }
 
 export class CompleteUploadChunkResponse {
-    private _fileId: number;
-    private _chunkId: number[];
-    private _message: string;
+    fileId: number;
+    chunkId: number[];
+    message: string;
 
     constructor(fileId: number, chunkId: number[], message: string) {
-        this._fileId = fileId;
-        this._chunkId = chunkId;
-        this._message = message;
-    }
-
-    get fileId(): number {
-        return this._fileId;
-    }
-
-    set fileId(value: number) {
-        this._fileId = value;
-    }
-
-    get chunkId(): number[] {
-        return this._chunkId;
-    }
-
-    set chunkId(value: number[]) {
-        this._chunkId = value;
-    }
-
-    get message(): string {
-        return this._message;
-    }
-
-    set message(value: string) {
-        this._message = value;
+        this.fileId = fileId;
+        this.chunkId = chunkId;
+        this.message = message;
     }
 }
 
 export class ChunkIdETag {
-    private _partNumber: number;
-    private _eTag: string;
-
-    constructor(partNumber: number, eTag: string) {
-        this._partNumber = partNumber;
-        this._eTag = eTag;
-    }
-
-    get partNumber(): number {
-        return this._partNumber;
-    }
-
-    set chunkId(value: number) {
-        this._partNumber = value;
-    }
-
-    get eTag(): string {
-        return this._eTag;
-    }
-
-    set eTag(value: string) {
-        this._eTag = value;
-    }
+    partNumber: number;
+    eTag: string;
 }
 
 export class FinishUploadAllChunkDTO {

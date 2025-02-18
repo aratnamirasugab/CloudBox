@@ -4,6 +4,7 @@ interface FileTrashAttributes {
     id: number;
     fileId: number;
     folderId: number;
+    userId: number;
     createdAt: Date;
     isHardDeleted: boolean;
     isRestored: boolean;
@@ -15,6 +16,7 @@ export class FileTrash extends Model<FileTrashAttributes, FileTrashCreationAttri
     createdAt: Date;
     fileId: number;
     folderId: number;
+    userId: number;
     id: number;
     isHardDeleted: boolean;
     isRestored: boolean;
@@ -31,6 +33,10 @@ export class FileTrash extends Model<FileTrashAttributes, FileTrashCreationAttri
                 allowNull: false
             },
             folderId: {
+                type: DataTypes.INTEGER,
+                allowNull: false
+            },
+            userId: {
                 type: DataTypes.INTEGER,
                 allowNull: false
             },

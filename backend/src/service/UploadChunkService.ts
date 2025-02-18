@@ -126,6 +126,4 @@ export class UploadChunkService {
         const chunksId: number[] = existingChunks.map((chunk) => chunk.id);
         return new CompleteUploadChunkResponse(existingFile.id, chunksId, "Successfully updated.");
     }
-
-
 }

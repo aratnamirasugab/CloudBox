@@ -4,10 +4,14 @@ import {FileRepository} from "../database/repositories/FileRepository";
 import {Transaction} from "sequelize";
 import {FolderTrashRepository} from "../database/repositories/FolderTrashRepository";
 import {CreateFolderTrashPayload} from "../model/CreateFolderTrashPayload";
+import { FileTrashRepository } from "../database/repositories/FileTrashRepository";
+import { CreateFileTrashPayload } from "../model/CreateFileTrashPayload";
+import { File } from "../database/model/File";
 
 const folderRepository = new FolderRepository();
 const fileRepository = new FileRepository();
 const folderTrashRepository = new FolderTrashRepository();
+const fileTrashRepository = new FileTrashRepository();
 
 export class FolderService {
 
@@ -39,46 +43,74 @@ export class FolderService {
         return await folderRepository.getFolderByKey(key, userId);
     }
 
-    async deleteFolderByIds(folderId: number, userId: number): Promise<DeleteFolderResponseDTO> {
-        const folderIds: number[] = await folderRepository.getAllSubFolderIds(folderId, userId);
-
-        if (!folderIds || folderIds.length === 0) {
-            console.warn(`No subfolders found for root folder id. root folder id : ${folderId}`);
-            throw new Error('Internal Server Error');
-        }
-
+    async deleteFolderById(folderId: number, userId: number): Promise<DeleteFolderResponseDTO> {
         const transaction: Transaction = await Folder.sequelize.transaction();
         try {
-            let filesDeleted: number = 0;
-            for (const folderId of folderIds) {
+            // Fetch all subfolders in one query
+            const subFolders: Folder[] = await folderRepository.getAllSubFoldersByFolderId(folderId, userId);
+    
+            // If no subfolders, check if the root folder itself should be deleted
+            if (!subFolders || subFolders.length === 0) {
+                console.warn(`No subfolders found. Deleting root folder. Root folder id: ${folderId}`);
+    
+                await folderTrashRepository.createFolderTrash(
+                    new CreateFolderTrashPayload({ folderId: folderId, userId: userId, parentFolderId: null }),
+                    transaction
+                );
+    
                 const fileIds: number[] = await fileRepository.getFilesIdByFolderId(folderId, userId);
-
-                if (!fileIds || fileIds.length === 0) {
-                    console.warn(`No files found for folder id: ${folderId}`);
-                    continue; // skip to next iteration if no files are found
-                }
-
-                const [deletedFileAmount] = await fileRepository.deleteFilesWithIds(fileIds, folderId, transaction);
-                filesDeleted += deletedFileAmount;
-
-                // TODO : Change query to get folderId and its parentFolderId on the getAllSubFolderIds
-                const [createdFolderTrashAmount] = await folderTrashRepository.createNewRow(new CreateFolderTrashPayload(
-                    { folderId: folderId, userId:userId, parentFolderId: fo.der }
-                ))
+                await fileTrashRepository.createMultipleFileTrash(
+                    fileIds.map(fileId => new CreateFileTrashPayload({ fileId, folderId, userId })),
+                    transaction
+                );
+    
+                const [deletedFileCount] = await fileRepository.deleteFilesWithIds(fileIds, folderId, transaction);
+                await folderRepository.deleteFoldersWithIds([folderId], userId, transaction);
+    
+                await transaction.commit();
+                return new DeleteFolderResponseDTO(1, deletedFileCount);
             }
-
-            const [deletedFolderAmount] = await folderRepository.deleteFoldersWithIds(folderIds, userId, transaction);
-
+    
+            // Fetch all files in subfolders in one query
+            const allFiles: File[] = await fileRepository.getFilesByMultipleFolderIds(
+                subFolders.map(folder => folder.id),
+                userId
+            );
+    
+            // Move all subfolders and files to trash in batch
+            await folderTrashRepository.createMultipleFolderTrash(
+                subFolders.map(subFolder => new CreateFolderTrashPayload(
+                    { 
+                        folderId: subFolder.id, userId, parentFolderId: subFolder.parentFolderId 
+                    })),
+                transaction
+            );
+    
+            await fileTrashRepository.createMultipleFileTrash(
+                allFiles.map(file => new CreateFileTrashPayload(
+                    { fileId: file.id, userId: userId, folderId: file.folderId }
+                )), 
+                transaction
+            );
+    
+            // Delete all files first to prevent orphaned records
+            const fileIdsForDeletion: number[] = allFiles.map(file => file.id);
+            const [deletedFilesCount] = await fileRepository.deleteFilesWithFilesId(fileIdsForDeletion, userId, transaction);
+    
+            // Delete all folders
+            const folderIdsForDeletion: number[] = subFolders.map(folder => folder.id);
+            const [deletedFoldersCount] = await folderRepository.deleteFoldersWithIds(folderIdsForDeletion, userId, transaction);
+    
+            // Commit transaction
             await transaction.commit();
-            return new DeleteFolderResponseDTO(deletedFolderAmount, filesDeleted);
+            return new DeleteFolderResponseDTO(deletedFoldersCount, deletedFilesCount);
+    
         } catch (error) {
-            console.error('Transaction failed: ', error);
-
-            // Rollback the transaction if any error occurs
+            console.error(`Transaction failed for folderId: ${folderId}, userId: ${userId}. Error: `, error);
+    
+            // Rollback transaction on failure
             await transaction.rollback();
-
-            throw new Error('Internal Server Error'); 
+            throw new Error('Internal Server Error');
         }
     }
-
 }
