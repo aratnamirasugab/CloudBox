@@ -10,11 +10,12 @@
 4. [Security Features](#security-features)
 5. [UI & User Experience](#ui--user-experience)
 6. [Advanced Features](#advanced-features)
-7. [Getting Started](#getting-started)
-8. [Contributing](#contributing)
-9. [License](#license)
-10. [Code of Conduct](#code-of-conduct)
-11. [Contact](#contact)
+7. [Diagram](#diagram)
+8. [Getting Started](#getting-started)
+9. [Contributing](#contributing)
+10. [License](#license)
+11. [Code of Conduct](#code-of-conduct)
+12. [Contact](#contact)
 
 ## Overview
 
@@ -152,6 +153,11 @@ The project is designed with simplicity and security in mind—it's packed with 
 
 - **Mobile & Desktop Sync**
     - Create mobile apps for iOS and Android and a sync client for desktop platforms (Windows, Mac, Linux).
+
+---
+
+## Diagram
+
 
 ---
 
