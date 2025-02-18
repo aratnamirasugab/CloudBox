@@ -158,6 +158,11 @@ The project is designed with simplicity and security in mind—it's packed with 
 
 ## Diagram
 
+### Multipart Uploading
+![Multi-part Uploading](images/mermaid-diagram-2025-02-18-234241.png)
+
+### Restoration Flow
+![Restoration Flow](images/mermaid-diagram-2025-02-18-234306.png)
 
 ---
 
