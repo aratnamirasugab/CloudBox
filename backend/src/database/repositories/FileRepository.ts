@@ -140,4 +140,21 @@ export class FileRepository {
             }
         })
     }
+
+    async restoreFileByFileIds(userId: number, fileIds: number[], transaction: Transaction) {
+        return await File.update({
+            isDeleted: false,
+            updatedAt: new Date()
+        }, {
+            returning: false,
+            where: {
+                id: {
+                    [Op.in]: fileIds
+                },
+                userId: userId,
+                isDeleted: true
+            },
+            transaction: transaction ?? null
+        })
+    }
 }

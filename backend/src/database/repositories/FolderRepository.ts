@@ -49,20 +49,38 @@ export class FolderRepository {
     async getAllSubFoldersByFolderId(folderId: number,  userId: number): Promise<Folder[]> {
         const query: string = `
             WITH RECURSIVE folder_hierarchy AS (
-                SELECT id, parent_folder_id FROM Folder WHERE id = :folderId, userId = :userId 
+                SELECT id, parent_folder_id FROM Folder WHERE id = :folderId AND userId = :userId 
                 UNION ALL
                 SELECT f.id, f.parent_folder_id FROM Folder f INNER JOIN folder_hierarchy fh ON f.parent_folder_id = fh.id
             )
             SELECT id, parent_folder_id FROM folder_hierarchy
         `;
 
-        const result: Folder[] = await Folder.sequelize.query(query, {
-            replacements: { folderId, userId },
+        return await Folder.sequelize.query(query, {
+            replacements: {folderId, userId},
             type: QueryTypes.SELECT
         });
-
-        return result;
     }
+
+    async getAllSubFoldersByFolderIds(folderIds: number[], userId: number): Promise<Folder[]> {
+        const query: string = `
+            WITH RECURSIVE folder_hierarchy AS (
+                SELECT id, parent_folder_id FROM Folder 
+                WHERE id IN (:folderIds) AND userId = :userId
+                UNION ALL
+                SELECT f.id, f.parent_folder_id 
+                FROM Folder f 
+                INNER JOIN folder_hierarchy fh ON f.parent_folder_id = fh.id
+            )
+            SELECT id, parent_folder_id FROM folder_hierarchy
+        `;
+
+        return await Folder.sequelize.query(query, {
+            replacements: { folderIds, userId },
+            type: QueryTypes.SELECT
+        });
+    }
+
 
     async deleteFoldersWithIds(folderIds: number[], userId:number, transaction: Transaction | undefined):
         Promise<[affectedCount: number, affectedRows: Folder[]]> {
@@ -81,16 +99,19 @@ export class FolderRepository {
         })
     }
 
-    async getFolderWithIdUserId(folderId: number, userId: number): Promise<Folder> {
-        return await Folder.findOne({
+    async restoreFolderByFolderIds(userId:number, folderIds: number[], transaction: Transaction):
+        Promise<[affectedCount: number, affectedRows: Folder[]]>{
+        return await Folder.update({
+            isDeleted: false
+        }, {
+            returning: false,
             where: {
-                id: folderId,
-                isDeleted: true,
-                userId: userId
-            } as any
+                userId: userId,
+                id: {
+                    [Op.in]: folderIds
+                }
+            },
+            transaction: transaction ?? null
         })
-
     }
-
-
 }

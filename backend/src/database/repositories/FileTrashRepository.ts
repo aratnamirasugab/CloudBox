@@ -1,4 +1,4 @@
-import {QueryTypes, Transaction} from "sequelize";
+import {Op, QueryTypes, Transaction} from "sequelize";
 import {FileTrash} from "../model/FileTrash";
 import {CreateFileTrashPayload} from "../../model/CreateFileTrashPayload";
 
@@ -21,12 +21,27 @@ export class FileTrashRepository {
         const query: string = `
             SELECT ft.* FROM FileTrash filet
             LEFT JOIN FolderTrash foldt ON filet.folder_id = foldt.folder_id
-            WHERE filet.folder_id = null, filet.user_id = :userId
+            WHERE filet.folder_id = null, filet.user_id = :userId, filet.is_restored = false
         `;
 
         return await FileTrash.sequelize.query(query, {
             replacements: {userId},
             type: QueryTypes.SELECT
         });
+    }
+
+    async restoreFileTrashByFileIds(userId: number, fileIds: number[], transaction: Transaction) {
+        return await FileTrash.update({
+            isRestored: true
+        }, {
+            returning: false,
+            where: {
+                userId: userId,
+                fileId: {
+                    [Op.in]: fileIds
+                }
+            },
+            transaction : transaction ?? null
+        })
     }
 }
