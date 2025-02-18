@@ -13,7 +13,7 @@ export type FolderResponse = Omit<Folder, 'id' | 'userId' | 'isDeleted'>
 
 interface FolderAttributes {
     id: number;
-    parentFolderId: number;
+    parentFolderId: number | null;
     userId: number;
     name: string;
     createdAt: Date;
@@ -24,7 +24,7 @@ interface FolderCreationAttributes extends Optional<FolderAttributes, 'id'> {}
 
 export class Folder extends Model<FolderAttributes, FolderCreationAttributes> implements FolderAttributes {
     id!: number;
-    parentFolderId!: number;
+    parentFolderId!: number | null;
     userId!: number;
     name!: string;
     createdAt!: Date;
@@ -39,7 +39,7 @@ export class Folder extends Model<FolderAttributes, FolderCreationAttributes> im
             },
             parentFolderId: {
                 type: DataTypes.INTEGER,
-                allowNull: false
+                allowNull: true
             },
             userId: {
                 type: DataTypes.INTEGER,

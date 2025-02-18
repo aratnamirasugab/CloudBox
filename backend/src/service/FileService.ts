@@ -12,10 +12,10 @@ import {UploadSessionRepository} from "../database/repositories/UploadSessionRep
 import {CloudStorageService} from './cloudStorage/CloudStorageService';
 import {CloudStorageRequest} from '../model/CloudStorageRequest';
 import {CloudStorageResponse} from '../model/CloudStorageResponse';
-import { Transaction } from 'sequelize';
-import { DeleteFileResponse } from '../model/DeleteFileResponse';
-import { FileTrashRepository } from '../database/repositories/FileTrashRepository';
-import { CreateFileTrashPayload } from '../model/CreateFileTrashPayload';
+import {Transaction} from 'sequelize';
+import {DeleteFileResponse} from '../model/DeleteFileResponse';
+import {FileTrashRepository} from '../database/repositories/FileTrashRepository';
+import {CreateFileTrashPayload} from '../model/CreateFileTrashPayload';
 
 const uploadChunkRepository = new UploadChunkRepository();
 const fileRepository = new FileRepository();
@@ -96,9 +96,7 @@ export class FileService {
             );
             
             await fileTrashRepository.createMultipleFileTrash(existingFiles.map(file => new CreateFileTrashPayload(
-                { fileId: file.id, folderId: file.folderId, userId: userId}
-            )),
-                transaction
+                { fileId: file.id, folderId: file.folderId, userId: userId})), transaction
             );
 
             const [deletedFileAmount] = await fileRepository.deleteFilesWithIds(

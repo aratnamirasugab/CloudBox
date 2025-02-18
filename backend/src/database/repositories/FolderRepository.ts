@@ -77,7 +77,7 @@ export class FolderRepository {
                 userId: userId,
                 isDeleted: false
             },
-            transaction: transaction
+            transaction: transaction ?? null
         })
     }
 

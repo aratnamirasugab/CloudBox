@@ -10,7 +10,7 @@ import {
 } from "../database/model/File";
 import ResponseHandler from "../utils/ResponseHandler";
 import Authentication from "../model/Authentication";
-import { DeleteFileResponse } from '../model/DeleteFileResponse';
+import {DeleteFileResponse} from '../model/DeleteFileResponse';
 
 const router = express.Router();
 const fileService  = new FileService();

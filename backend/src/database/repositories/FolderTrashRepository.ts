@@ -1,6 +1,6 @@
 import {FolderTrash} from "../model/FolderTrash";
 import {CreateFolderTrashPayload} from "../../model/CreateFolderTrashPayload";
-import { QueryTypes, Transaction } from "sequelize";
+import {QueryTypes, Transaction} from "sequelize";
 
 export class FolderTrashRepository {
 
@@ -21,15 +21,15 @@ export class FolderTrashRepository {
 
     async createFolderTrash(payload: CreateFolderTrashPayload, transaction: Transaction): Promise<void> {
 
-        if (!payload || payload === undefined) return; 
+        if (!payload) return;
 
         await FolderTrash.create(
             { folderId: payload.folderId, parentFolderId: payload.parentFolderId, userId: payload.userId}, 
-            { transaction: transaction}
+            { transaction: transaction ?? null}
         );   
     }
 
-    async getFolderTrashRootLevel(userId: number): Promise<FolderTrash[]> {
+    async getTopLevelDeletedFolder(userId: number): Promise<FolderTrash[]> {
 
         const query: string = `
             SELECT ft.* FROM FolderTrash ft
@@ -37,13 +37,10 @@ export class FolderTrashRepository {
             WHERE parent_ft.folder_id = 0, parent_ft.user_id = :userId
         `;
 
-        const result: FolderTrash[] = await FolderTrash.sequelize.query(query, {
-            replacements: { userId },
+        return await FolderTrash.sequelize.query(query, {
+            replacements: {userId},
             type: QueryTypes.SELECT
         });
-
-
-        return result;
     }
 
 }

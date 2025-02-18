@@ -1,28 +1,16 @@
-import {TrashBin, TrashItem} from "../database/model/TrashBin";
+import {FileTrash} from "../database/model/FileTrash";
+import {FileTrashRepository} from "../database/repositories/FileTrashRepository";
+import {FolderTrash} from "../database/model/FolderTrash";
+import {FolderTrashRepository} from "../database/repositories/FolderTrashRepository";
+import {ViewTrashResponse} from "../model/ViewTrashResponse";
+
+const fileTrashRepository = new FileTrashRepository();
+const folderTrashRepository = new FolderTrashRepository();
 
 export class TrashBinService {
-
-    async getTrashesByUserId(userId: number): Promise<TrashItem[]> {
-
-        const trashBinMap: Map<string, TrashItem> = new Map();
-        const trashes: TrashBin[] = await trashBinRepository.getTrashesByUserId(userId);
-        trashes.forEach(trash => {
-            const trashItem: TrashItem = new TrashItem(trash.id, trash.name, trash.type, trash.parentId, []);
-            trashBinMap.set(`${trash.type}_${trash.id}`, trashItem);
-        })
-
-        const rootFolder: TrashItem[] = [];
-        trashes.forEach(trash => {
-            if (trash.parentId !== null) {
-                const parentTrash: TrashItem = trashBinMap.get(`folder_${trash.parentId}`);
-                if (parentTrash) {
-                    parentTrash.children.push(trashBinMap.get(`${trash.type}_${trash.id}`));
-                }
-            } else {
-                rootFolder.push(trashBinMap.get(`${trash.type}_${trash.id}`));
-            }
-        })
-
-        return rootFolder;
+    async getTrashesByUserId(userId: number): Promise<ViewTrashResponse> {
+        const fileTrashes: FileTrash[] = await fileTrashRepository.getTopLevelDeletedFiles(userId);
+        const folderTrashes: FolderTrash[] = await folderTrashRepository.getTopLevelDeletedFolder(userId);
+        return new ViewTrashResponse(fileTrashes, folderTrashes);
     }
 }

@@ -101,7 +101,7 @@ export class FileRepository {
                 userId: userId,
                 isDeleted: false
             },
-            transaction: transaction
+            transaction: transaction ?? null
         })
     } 
 
@@ -123,28 +123,6 @@ export class FileRepository {
         }
 
         return resultFileIds;
-    }
-
-    async getFileWithIdUserId(fileId: number, userId: number): Promise<File> {
-        return await File.findOne({
-            where: {
-                id: fileId,
-                userId: userId,
-                uploadStatus: Status.FINISHED.toString(),
-                isDeleted: true
-            } as any
-        })
-    }
-
-    async getFilesWithUserIdRootLevel(userId: number): Promise<File[]> {
-        return await File.findAll({
-            where: {
-                userId: userId,
-                folderId: 0,
-                uploadStatus: Status.FINISHED.toString(),
-                isDeleted: true
-            }
-        })
     }
 
     async getFilesByMultipleFolderIds(folderIds: number[], userId: number): Promise<File[]> {

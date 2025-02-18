@@ -4,9 +4,9 @@ import {FileRepository} from "../database/repositories/FileRepository";
 import {Transaction} from "sequelize";
 import {FolderTrashRepository} from "../database/repositories/FolderTrashRepository";
 import {CreateFolderTrashPayload} from "../model/CreateFolderTrashPayload";
-import { FileTrashRepository } from "../database/repositories/FileTrashRepository";
-import { CreateFileTrashPayload } from "../model/CreateFileTrashPayload";
-import { File } from "../database/model/File";
+import {FileTrashRepository} from "../database/repositories/FileTrashRepository";
+import {CreateFileTrashPayload} from "../model/CreateFileTrashPayload";
+import {File} from "../database/model/File";
 
 const folderRepository = new FolderRepository();
 const fileRepository = new FileRepository();

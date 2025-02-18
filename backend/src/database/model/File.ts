@@ -13,7 +13,7 @@ export type FileResponse = Omit<File, 'id' | 'updatedAt' | 'userId' | 'uploadSta
 
 interface FileAttributes {
     id: number;
-    folderId: number;
+    folderId: number | null;
     userId: number;
     name: string;
     mimeType: string;
@@ -29,7 +29,7 @@ interface FileCreationAttributes extends Optional<FileAttributes, 'id'> {}
 
 export class File extends Model<FileAttributes, FileCreationAttributes> implements FileAttributes {
     public id!: number;
-    public folderId!: number;
+    public folderId!: number | null;
     public userId!: number;
     public name!: string;
     public mimeType!: string;
@@ -49,7 +49,7 @@ export class File extends Model<FileAttributes, FileCreationAttributes> implemen
             },
             folderId: {
                 type: DataTypes.INTEGER,
-                allowNull: false
+                allowNull: true
             },
             userId: {
                 type: DataTypes.INTEGER,

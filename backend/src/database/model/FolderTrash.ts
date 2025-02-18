@@ -3,7 +3,7 @@ import {DataTypes, Model, Optional, Sequelize} from "sequelize";
 interface FolderTrashAttributes {
     id: number;
     folderId: number;
-    parentFolderId: number;
+    parentFolderId: number | null;
     userId: number;
     createdAt: Date;
     isHardDeleted: boolean;
@@ -18,7 +18,7 @@ export class FolderTrash extends Model<FolderTrashAttributes, FolderTrashCreatio
     id: number;
     isHardDeleted: boolean;
     isRestored: boolean;
-    parentFolderId: number;
+    parentFolderId: number | null;
     userId: number;
 
     public static initialize(sequelize: Sequelize) {
@@ -34,7 +34,7 @@ export class FolderTrash extends Model<FolderTrashAttributes, FolderTrashCreatio
             },
             parentFolderId: {
                 type: DataTypes.INTEGER,
-                allowNull: false
+                allowNull: true
             },
             userId: {
                 type: DataTypes.INTEGER,
