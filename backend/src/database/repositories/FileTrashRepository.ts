@@ -21,7 +21,7 @@ export class FileTrashRepository {
         const query: string = `
             SELECT ft.* FROM FileTrash filet
             LEFT JOIN FolderTrash foldt ON filet.folder_id = foldt.folder_id
-            WHERE filet.folder_id = null, filet.user_id = :userId, filet.is_restored = false
+            WHERE filet.folder_id IS NULL AND filet.user_id = :userId AND filet.is_restored = false
         `;
 
         return await FileTrash.sequelize.query(query, {

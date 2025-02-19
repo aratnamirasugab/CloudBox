@@ -1,25 +1,20 @@
 import {Sequelize} from 'sequelize';
-import * as dotenv from 'dotenv';
-
 import {initializeFileTable} from './model/File';
 import {initializeFolderTable} from './model/Folder';
 import {initializeUserTable} from './model/User';
 import {initializeUploadChunkTable} from './model/UploadChunk';
 import {initializeUploadSessionTable} from './model/UploadSession';
 
+import * as dotenv from 'dotenv';
+import config from "../config/config";
 dotenv.config();
 
-const dbName = process.env.DB_NAME || 'mantaradrivedb';
-const dbUser = process.env.DB_USER || 'postgres';
-const dbPassword = process.env.DB_PASSWORD || 'dev_password';
-const dbHost = process.env.DB_HOST || 'localhost';
-
 const db = new Sequelize(
-    dbName,
-    dbUser,
-    dbPassword,
+    config.database.name,
+    config.database.user,
+    config.database.password,
     {
-        host: dbHost,
+        host: config.database.host,
         dialect: 'postgres',
         logging: false
     },

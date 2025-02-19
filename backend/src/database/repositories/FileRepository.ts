@@ -30,7 +30,7 @@ export class FileRepository {
     async getFilesWithFolderId(folderId: number | undefined, userId: number): Promise<File[]> {
         return await File.findAll({
             where: {
-                folderId: folderId ?? 0,
+                folderId: folderId ?? null,
                 userId: userId,
                 uploadStatus: Status.FINISHED.toString(),
                 isDeleted: false

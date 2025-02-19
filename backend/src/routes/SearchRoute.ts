@@ -18,8 +18,8 @@ router.get('/search', verifyToken, async (req, res) => {
     try {
         const key: string = req.params.key;
         const authenticated: Authentication = req.body.verify;
-        const files: File[] = await fileService.getFilesByKey(key, authenticated.getUserId());
-        const folders: Folder[] = await folderService.getFolderByKey(key, authenticated.getUserId());
+        const files: File[] = await fileService.getFilesByKey(key, authenticated.userId);
+        const folders: Folder[] = await folderService.getFolderByKey(key, authenticated.userId);
         return ResponseHandler.success(res, new SearchResults(files, folders));
     } catch (error) {
         return ResponseHandler.error(res);

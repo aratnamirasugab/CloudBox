@@ -35,8 +35,6 @@ The project is designed with simplicity and security in mind—it's packed with 
 
 - **User Authentication & Management**
     - [x] Login/Registration
-    - [ ] OAuth (Google, GitHub)
-    - [ ] Role-based access control (Admin/User)
 
 - **File Upload & Management**
     - [ ] Drag-and-drop file upload
@@ -77,6 +75,8 @@ The project is designed with simplicity and security in mind—it's packed with 
     - [ ] Link Expiry Dates
 
 - **Security & Privacy Upgrades**
+    - [ ] OAuth (Google, GitHub)
+    - [ ] Role-based access control (Admin/User)
     - [ ] End-to-End Encryption (AES-256)
     - [ ] Access Logs & Activity Tracking (logins, file downloads)
     - [ ] 2FA (Two-Factor Authentication)

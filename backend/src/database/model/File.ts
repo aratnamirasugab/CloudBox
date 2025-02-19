@@ -49,6 +49,7 @@ export class File extends Model<FileAttributes, FileCreationAttributes> implemen
             },
             folderId: {
                 type: DataTypes.INTEGER,
+                defaultValue: null,
                 allowNull: true
             },
             userId: {
