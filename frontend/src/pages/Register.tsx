@@ -1,28 +1,28 @@
-import { useState } from "react"
+import { useState } from "react";
 import useAuthStore from "../store/auth";
 import { useNavigate } from "react-router-dom";
 
-const Login = () => {
+
+const Register = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const login = useAuthStore((state) => state.login);
+    const register = useAuthStore((state) => state.register);
     const navigate = useNavigate();
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         try {
-            await login(email, password);
-            navigate("/dashboard");
+            await register(email, password);
+            navigate("/login");
         } catch (error) {
-            alert("Invalid login credentials: " + error);
+            alert("Unable to register " + error);
         }
     }
-
 
     return (
         <div>
             <form onSubmit={handleSubmit}>
-                <h2>Login</h2>
+                <h2>Register</h2>
                 <input 
                     type="email" 
                     placeholder="Email"
@@ -32,16 +32,16 @@ const Login = () => {
                 />
                 <input 
                     type="password" 
-                    placeholder="password"
+                    placeholder="Password"
                     value={password}
                     onChange={(event) => setPassword(event.target.value)}
                     required
                 />
-                <button type="submit">Login</button>
-                <p>Don't have an account? <a href="/register">Register</a></p>
+                <button type="submit">Register</button>
+                <p>Already registered? <a href="/login">Login</a></p>
             </form>
         </div>
     )
 }
 
-export default Login;
+export default Register;
