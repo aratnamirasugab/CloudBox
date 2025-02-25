@@ -1,6 +1,6 @@
 class Authentication {
-    userId: number;
-    email: string;
+    public userId: number;
+    public email: string;
 
     constructor(userId, email) {
         this.userId = userId;

@@ -5,7 +5,7 @@ import {IsArray, IsNotEmpty, IsNumber, IsString} from "class-validator";
 /*
  *  Response Utility
  */
-export type FolderResponse = Omit<Folder, 'id' | 'userId' | 'isDeleted'>
+export type FolderResponse = Omit<Folder, 'userId' | 'isDeleted'>
 /*
  * End of Response Utility
  */

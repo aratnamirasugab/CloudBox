@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import useAuthStore from "../store/auth";
-
+import useAuthStore, { User } from "../store/auth";
+import FileManager from "../components/FileManager";
 
 const Dashboard = () => {
     const logout = useAuthStore((state) => state.logout);
@@ -10,11 +10,20 @@ const Dashboard = () => {
       logout();
       navigate("/login");
     };
-  
+
+    // const userString: string | null = localStorage.getItem("user");
+    // if (!userString) {
+    //   handleLogout();
+    //   return;
+    // }
+    // const user: User = JSON.parse(userString);
+    
     return (
-      <div className="flex flex-col items-center justify-center h-screen">
-        <h1 className="text-2xl font-bold mb-4">Welcome to CloudBox</h1>
-        <button onClick={handleLogout} className="bg-red-500 text-white px-4 py-2 rounded">Logout</button>
+      <div className="p-5">
+        <h1 className="text-xl font-bold mb-4">Dashboard</h1>
+  
+        {/* File & Folder Manager */}
+        <FileManager token={"someToken"} />
       </div>
     );
 }

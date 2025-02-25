@@ -1,8 +1,7 @@
 import axios from "axios";
 import { create } from "zustand";
 
-type User = {
-    id: string;
+export type User = {
     email: string;
     token: string;
 }
@@ -14,13 +13,27 @@ type AuthState = {
     logout: () => void;
 }
 
+type ResponseLogin = {
+    success: boolean;
+    statusCode: number;
+    message: string;
+    data: string
+}
+
 const useAuthStore = create<AuthState>((set) => ({
     user: null,
 
     login: async (email, password) => {
-        const { data } = await axios.post('/api/login', { email, password });
-        set({ user: data});
-        localStorage.setItem("user", JSON.stringify(data));
+        const response: ResponseLogin = await axios.post('/api/login', { email, password });
+        const token = response.data;
+        if (!token) {
+            throw new Error('Internal Server Error');
+        }
+
+        localStorage.setItem("user", JSON.stringify({
+            email: null,
+            token: token
+        }));
     },
 
     register: async (email, password) => {

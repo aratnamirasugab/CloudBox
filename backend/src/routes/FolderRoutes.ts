@@ -33,9 +33,10 @@ router.post('/folder/create',
     try {
         const createFolderPayload: CreateFolderDTO = req.body;
         const authenticated: Authentication = req.body.verify;
-        const folder: Folder = await folderRepository.createFolder(createFolderPayload, authenticated.getUserId());
+        const folder: Folder = await folderRepository.createFolder(createFolderPayload, authenticated.userId);
         return ResponseHandler.success(res, new CreateFolderResponse(folder));
     } catch (error) {
+        console.error(error);
         return ResponseHandler.error(res);
     }
 });
@@ -49,11 +50,12 @@ router.get('/folder/view',
         const payload: ViewFolderDTO = req.body;
         const authenticated: Authentication = req.body.verify;
 
-        const files: File[]  = await fileRepository.getFilesWithFolderId(payload.folderId, authenticated.getUserId());
+        const files: File[]  = await fileRepository.getFilesWithFolderId(payload.folderId, authenticated.userId);
         const folders: Folder[] = await folderRepository.getFoldersByParentFolderId(
-            payload.folderId, authenticated.getUserId());
+            payload.folderId, authenticated.userId);
         return ResponseHandler.success(res, new ViewFolderResponse(folders, files));
     } catch (error) {
+        console.error(error);
         return ResponseHandler.error(res);
     }
 })
@@ -67,7 +69,7 @@ router.patch('/folder/update',
         const payload: UpdateFolderDTO = req.body;
         const authenticated: Authentication = req.body.verify;
 
-        await folderService.updateFolderByFolderId(payload, authenticated.getUserId());
+        await folderService.updateFolderByFolderId(payload, authenticated.userId);
         return ResponseHandler.success(res);
     } catch (error) {
         return ResponseHandler.error(error);
@@ -80,10 +82,11 @@ router.delete('/folder/delete', verifyToken, Validator.classValidator(DeleteFold
         const payload: DeleteFolderRequestDTO = req.body;
 
         const filteredResponse: DeleteFolderResponseDTO = await folderService.deleteFolderById(
-            payload.folderId, authenticated.getUserId()
+            payload.folderId, authenticated.userId
         );
         return ResponseHandler.success(res, filteredResponse);
     } catch (error) {
+        console.error()
         return ResponseHandler.error(res);
     }
 })

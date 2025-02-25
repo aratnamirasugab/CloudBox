@@ -5,7 +5,7 @@ import {Status} from "../../model/enum/Status";
 /*
  *  Response Utility
  */
-export type FileResponse = Omit<File, 'id' | 'updatedAt' | 'userId' | 'uploadStatus' | 'blobLink' | 'isDeleted'>
+export type FileResponse = Omit<File, 'updatedAt' | 'userId' | 'uploadStatus' | 'blobLink' | 'isDeleted'>
 /*
  * End of Response Utility
  */
