@@ -1,9 +1,10 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { ViewFolderResponse } from "../model/ViewFolderResponse";
+import { FolderResponse, ViewFolderResponse } from "../model/ViewFolderResponse";
 import { FaFolder, FaFileAlt } from "react-icons/fa"
 import { ViewFolderRequest } from "../model/ViewFolderRequest";
 import { getMockViewFolderResponse } from "../mock/viewresponse";
+import AddButton from "./AddButton";
 
 const mockResponse: ViewFolderResponse = getMockViewFolderResponse();
 
@@ -15,39 +16,36 @@ const FileManager = ( {token} ) => {
     const [items, setItems] = useState<ViewFolderResponse>();
 
     useEffect(() => {
-        fetchFiles(currentFolderId);
+      fetchFiles(currentFolderId);
     }, [currentFolderId])
 
     const fetchFiles = async (rootFolderId: number | null) => {
-        setLoading(true);
-        setError("");
+      setLoading(true);
+      setError("");
 
-        try {
-            const request: ViewFolderRequest = new ViewFolderRequest(rootFolderId);
-            // const { data } = await axios.get< {data: ViewFolderResponse} >('/api/folder/view', {
-            //     headers: {
-            //         Authorization: `${token}`
-            //     },
-            //     params: request
-            // });
-
-            const data = mockResponse;
-
-            if (!data) {
-                throw new Error('Response is empty.');
-            }
-            setItems(data);
-        } catch (error) {
-            setError('Failed to load files');
-            console.error(error);
-        } finally {
-            setLoading(false);
-        }
+      try {
+          const request: ViewFolderRequest = new ViewFolderRequest(rootFolderId);
+          // const { data } = await axios.get< {data: ViewFolderResponse} >('/api/folder/view', {
+          //     headers: {
+          //         Authorization: `${token}`
+          //     },
+          //     params: request
+          // });
+          const data = mockResponse;
+          if (!data) {
+              throw new Error('Response is empty.');
+          }
+          setItems(data);
+      } catch (error) {
+          setError('Failed to load files');
+          console.error(error);
+      } finally {
+          setLoading(false);
+      }
     }
 
     const handleFolderClick = (folderId: number | null) => {
         setCurrentFolderId(folderId);
-
     };
 
     const handleBack = () => {
@@ -60,23 +58,31 @@ const FileManager = ( {token} ) => {
         setCurrentFolderId(parentFolderId);
     }
 
+    const handleCreateFolder = (folderName: string, parentFolderId: number | null) => {
+      const newFolder = new FolderResponse(0, parentFolderId, folderName, new Date);
+      setItems({
+        ...items,
+        folders: [...(items.folders || []), newFolder]
+      });
+    }
+
     return (
-        <div className="p-5">
-          <h2 className="text-lg font-semibold mb-4">📂 My Files</h2>
-    
-          {/* Breadcrumb Navigation */}
-          <div className="mb-3">
-            {currentFolderId !== null && currentFolderId !== 0 && (
-              <button
-                onClick={handleBack}
-                className="text-blue-500 hover:underline mb-2"
-              >
-                ⬅ Back
-              </button>
-            )}
-            <span className="ml-2 text-gray-500">{currentFolderId ?? null}</span>
-          </div>
-    
+      <div className="p-5">
+        <h2 className="text-lg font-semibold mb-4">📂 My Files</h2>
+
+        {/* Breadcrumb Navigation */}
+        <div className="mb-3">
+          {currentFolderId !== null && currentFolderId !== 0 && (
+            <button
+              onClick={handleBack}
+              className="text-blue-500 hover:underline mb-2"
+            >
+              ⬅ Back
+            </button>
+          )}
+          <span className="ml-2 text-gray-500">{currentFolderId ?? null}</span>
+        </div>
+          
         {loading ? (
           <p>Loading...</p>
         ) : error ? (
@@ -88,7 +94,7 @@ const FileManager = ( {token} ) => {
             ) : (
               [...items.folders, ...items.files].map((item) => (
                 <div
-                    key={"folderId" in item ? `file-${item.id}` : `folder-${item.id}`}
+                    key={"folderId" in item ? `file-${item.id}-${item.name}` : `folder-${item.id}-${item.name}`}
                     onClick={() => "parentFolderId" in item ? handleFolderClick(item.id) : null}
                     className="p-4 border rounded-lg shadow-sm flex items-center gap-2 cursor-pointer hover:bg-gray-100"
                 >
@@ -103,7 +109,13 @@ const FileManager = ( {token} ) => {
             )}
           </div>
         )}
-        </div>
+
+        {/* Floating Plus Button */}
+        <AddButton 
+          onUpload={() => console.log("Upload File Clicked")} 
+          onCreateFolder={handleCreateFolder} 
+        />
+      </div>
     );
 }
 

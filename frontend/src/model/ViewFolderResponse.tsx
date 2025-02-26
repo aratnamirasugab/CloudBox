@@ -14,7 +14,7 @@ export class FolderResponse {
     name: string;
     createdAt: Date;
 
-    constructor(id: number, parentFolderId: number, name: string, createdAt: Date) {
+    constructor(id: number, parentFolderId: number | null, name: string, createdAt: Date) {
         this.id = id;
         this.parentFolderId = parentFolderId;
         this.name = name;
