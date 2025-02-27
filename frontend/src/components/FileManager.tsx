@@ -101,7 +101,7 @@ const FileManager = ( {token} ) => {
                   {"folderId" in item ? (
                       <FaFileAlt className="text-gray-500 text-xl" />
                     ) : (
-                      <FaFolder className="text-green-500 text-xl" />
+                      <FaFolder className="text-yellow-300 text-xl" />
                   )}
                   <span>{item.name}</span>
                 </div>
