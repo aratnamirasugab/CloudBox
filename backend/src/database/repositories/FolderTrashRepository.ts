@@ -43,8 +43,7 @@ export class FolderTrashRepository {
         });
     }
 
-    async restoreFolderTrashByFolderIds(userId: number, folderIds: number[], transaction: Transaction):
-        Promise<[affectedCount: number, affectedRows: FolderTrash[]]> {
+    async restoreFolderTrashByFolderIds(userId: number, folderIds: number[], transaction: Transaction): Promise<[number]> {
         return await FolderTrash.update({
             isRestored: true
         }, {

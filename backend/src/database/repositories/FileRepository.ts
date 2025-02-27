@@ -65,8 +65,7 @@ export class FileRepository {
         })
     }
 
-    async deleteFilesWithIds(fileIds: number[], folderId: number, transaction: Transaction | undefined)
-        : Promise<[affectedCount: number, affectedRows: File[]]> {
+    async deleteFilesWithIds(fileIds: number[], folderId: number, transaction: Transaction | undefined): Promise<[number]> {
         return await File.update({
             isDeleted: true,
             updatedAt: new Date()

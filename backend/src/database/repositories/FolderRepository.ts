@@ -25,8 +25,7 @@ export class FolderRepository {
         })
     }
 
-    async updateFolderByFolderId(payload: UpdateFolderDTO, userId: number):
-        Promise<[affectedCount: number, affectedRows: Folder[]]> {
+    async updateFolderByFolderId(payload: UpdateFolderDTO, userId: number): Promise<[number]> {
         return await Folder.update({
                 ...(payload.name !== undefined && { name: payload.name } ),
                 ...(payload.parentFolderId !== undefined && { parentFolderId : payload.parentFolderId })
@@ -83,7 +82,7 @@ export class FolderRepository {
 
 
     async deleteFoldersWithIds(folderIds: number[], userId:number, transaction: Transaction | undefined):
-        Promise<[affectedCount: number, affectedRows: Folder[]]> {
+        Promise<[number]> {
         return await Folder.update({
             isDeleted: true
         }, {
@@ -100,7 +99,7 @@ export class FolderRepository {
     }
 
     async restoreFolderByFolderIds(userId:number, folderIds: number[], transaction: Transaction):
-        Promise<[affectedCount: number, affectedRows: Folder[]]>{
+        Promise<[number]>{
         return await Folder.update({
             isDeleted: false
         }, {

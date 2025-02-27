@@ -17,7 +17,7 @@ router.patch('/upload_chunk/notify/specific',
     try {
         const chunkNotifyPayload: CompleteUploadChunkDTO = req.body;
         const authenticated: Authentication = req.body.verify;
-        return await uploadChunkService.patchChunkDetail(chunkNotifyPayload, authenticated.getUserId());
+        return await uploadChunkService.patchChunkDetail(chunkNotifyPayload, authenticated.userId);
     } catch (error) {
         console.log(`Failed during chunk patching process ${error}`);
         return ResponseHandler.error(res);
@@ -32,7 +32,7 @@ router.post('/upload_chunk/notify/all',
     try {
         const payload: FinishUploadAllChunkDTO = req.body;
         const authenticated: Authentication = req.body.verify;
-        return await uploadChunkService.notifyAllChunkCompleted(payload, authenticated.getUserId());
+        return await uploadChunkService.notifyAllChunkCompleted(payload, authenticated.userId);
     } catch (error) {
         return ResponseHandler.error(res);
     }

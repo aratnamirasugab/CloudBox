@@ -44,7 +44,8 @@ router.delete('/file/delete',
         const payload: DeleteFileRequestDTO = req.body;
         const authenticated: Authentication = req.body.verify;
 
-        const filteredResponse: DeleteFileResponse = await fileService.deleteFileByFileIds(payload, authenticated.getUserId());
+        const filteredResponse: DeleteFileResponse = await fileService.deleteFileByFileIds(
+            payload, authenticated.userId);
         return ResponseHandler.success(res, filteredResponse);
     } catch (error) {
         return ResponseHandler.error(res);

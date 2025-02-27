@@ -9,6 +9,10 @@ import * as dotenv from 'dotenv';
 import config from "../config/config";
 dotenv.config();
 
+
+console.log("Parsed Config : " + JSON.stringify(config, null, 2));
+
+
 const db = new Sequelize(
     config.database.name,
     config.database.user,
