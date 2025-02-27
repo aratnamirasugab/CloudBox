@@ -9,10 +9,17 @@ class Config {
     constructor() {
         const env = process.env.NODE_ENV || 'development';
         const config = require(`./${env}`).default;
-        
-        this.port = config.port;
-        this.cloudStorageProvider = config.cloudStorageProvider;
-        this.database = config.database;
+
+        // use env vars if present, otherwise fallback to the config file.
+        this.port = process.env.PORT || config.port;
+        this.cloudStorageProvider = process.env.CLOUD_STORAGE_PROVIDER || config.cloudStorageProvider;
+        this.database = {
+            user: process.env.DB_USER || config.database.user,
+            host: process.env.DB_HOST || config.database.host,
+            name: process.env.DB_NAME || config.database.name,
+            password: process.env.DB_PASSWORD || config.database.password,
+            port: parseInt(process.env.DB_PORT || config.database.port, 10),
+        };
     }
 }
 

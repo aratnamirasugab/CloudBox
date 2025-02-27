@@ -1,8 +1,11 @@
 {
   "name": "mantara-drive",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "main": "./dist/app.js",
   "scripts": {
+    "generate-env": "ts-node src/config/env-generator.ts",
+    "docker:up": "npm run generate-env && docker-compose up --build",
+    "docker:dev": "npm run generate-env && docker-compose -f docker-compose.dev.yml up --build",
     "build": "tsc",
     "start": "node ./dist/app.js",
     "dev": "npx nodemon --exec ts-node src/app.ts",
@@ -11,7 +14,7 @@
   "keywords": [],
   "author": "I Wayan Bagus Ari Mantara",
   "license": "ISC",
-  "description": "Backend for Mantara Drive",
+  "description": "Cloud Box Backend API",
   "dependencies": {
     "@types/pg": "^8.11.10",
     "aws-sdk": "^2.1692.0",

@@ -2,10 +2,10 @@ export default {
     port: 3000,
     cloudStorageProvider: 'AWS',
     database: {
-        "user": "admin",
+        "user": "postgres",
         "host": "localhost",
         "name": "mantaradrivedb",
-        "password": "admin",
+        "password": "dev_password",
         "port": 5432
     }
 };
