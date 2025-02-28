@@ -1,15 +1,5 @@
 import {DataTypes, Model, Optional, Sequelize} from "sequelize";
-import {FileResponse} from "./File";
 import {IsArray, IsNotEmpty, IsNumber, IsString} from "class-validator";
-
-/*
- *  Response Utility
- */
-export type FolderResponse = Omit<Folder, 'userId' | 'isDeleted'>
-/*
- * End of Response Utility
- */
-
 
 interface FolderAttributes {
     id: number;
@@ -68,40 +58,6 @@ export class Folder extends Model<FolderAttributes, FolderCreationAttributes> im
 
 export function initializeFolderTable(db : Sequelize) {
     Folder.initialize(db);
-}
-
-export class CreateFolderDTO {
-    @IsString()
-    @IsNotEmpty()
-    name: string;
-
-    @IsNumber()
-    @IsNotEmpty()
-    parentFolderId: number;
-}
-
-export class CreateFolderResponse {
-    parentFolderId: number;
-    folderId: number;
-
-    constructor(folder: Folder) {
-        this.parentFolderId = folder.parentFolderId;
-        this.folderId = folder.id;
-    }
-}
-
-export class ViewFolderDTO {
-    folderId: number | undefined;
-}
-
-export class ViewFolderResponse {
-    folders: FolderResponse[];
-    files: FileResponse[];
-
-    constructor(folders: FolderResponse[], files: FileResponse[]) {
-        this.folders = folders;
-        this.files = files;
-    }
 }
 
 export class UpdateFolderDTO {

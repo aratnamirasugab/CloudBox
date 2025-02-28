@@ -8,14 +8,12 @@ dotenv.config();
 const verifyToken = (req: Request, res: Response, next: NextFunction) => {
     const token = req.headers['authorization'];
     if (!token) {
-        res.status(403).json({error: 'A token is required for authentication'});
-        return;
+        return next(new Error('A token is required for authentication'));
     }
 
     jwt.verify(token, process.env.JWT_SECRET as string, (err, decoded: any) => {
         if (err) {
-            res.status(401).json({error: 'Invalid Token'});
-            return;
+            return next(new Error('Invalid Token'));
         }
 
         req.body.verify = new Authentication(decoded.id, undefined);

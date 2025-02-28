@@ -2,15 +2,6 @@ import {DataTypes, Model, Optional, Sequelize} from 'sequelize';
 import {IsArray, IsNotEmpty, IsNumber, IsString} from "class-validator";
 import {Status} from "../../model/enum/Status";
 
-/*
- *  Response Utility
- */
-export type FileResponse = Omit<File, 'updatedAt' | 'userId' | 'uploadStatus' | 'blobLink' | 'isDeleted'>
-/*
- * End of Response Utility
- */
-
-
 interface FileAttributes {
     id: number;
     folderId: number | null;

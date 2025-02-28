@@ -1,4 +1,4 @@
-import {CreateFolderDTO, Folder, UpdateFolderDTO} from "../model/Folder";
+import {Folder, UpdateFolderDTO} from "../model/Folder";
 import {Op, QueryTypes, Transaction} from "sequelize";
 
 export class FolderRepository {
@@ -6,19 +6,22 @@ export class FolderRepository {
         return await Folder.findByPk(id);
     }
 
-    async createFolder(payload: CreateFolderDTO, userId: number): Promise<Folder> {
-        return await Folder.create({
-            parentFolderId: payload.parentFolderId,
-            name: payload.name,
-            userId: userId,
-            createdAt: new Date()
-        });
+    async createFolder(parentFolderId: number | undefined, name: string, userId: number): Promise<Folder> {
+        return await Folder.create(
+            {
+                parentFolderId: parentFolderId ?? null,
+                name: name,
+                userId: userId,
+                createdAt: new Date()
+            }, {
+                returning: true
+            });
     }
 
     async getFoldersByParentFolderId(parentFolderId: number | undefined, userId: number): Promise<Folder[]> {
         return await Folder.findAll({
             where: {
-                parentFolderId : parentFolderId ?? 0, // if not specified, then fetch root folder for userId
+                parentFolderId : parentFolderId ?? null, // if not specified, then fetch root folder for userId
                 userId : userId,
                 isDeleted: false
             }

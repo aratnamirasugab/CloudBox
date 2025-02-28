@@ -10,6 +10,7 @@ const envContent = `
     DB_PASSWORD=${config.database.password}
     DB_PORT=${config.database.port}
     NODE_ENV=${process.env.NODE_ENV || 'development'}
+    JWT_SECRET=${config.jwtSecret}
 `;
 
 fs.writeFileSync('.env', envContent.trim());

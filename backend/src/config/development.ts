@@ -3,9 +3,10 @@ export default {
     cloudStorageProvider: 'AWS',
     database: {
         "user": "postgres",
-        "host": "localhost",
+        "host": "db",
         "name": "mantaradrivedb",
         "password": "dev_password",
         "port": 5432
-    }
+    },
+    jwtSecret: "secret",
 };

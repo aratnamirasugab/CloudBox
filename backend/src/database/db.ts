@@ -7,6 +7,7 @@ import {initializeUploadSessionTable} from './model/UploadSession';
 
 import * as dotenv from 'dotenv';
 import config from "../config/config";
+
 dotenv.config();
 
 const db = new Sequelize(

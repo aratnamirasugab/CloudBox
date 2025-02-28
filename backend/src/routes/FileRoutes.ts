@@ -1,4 +1,4 @@
-import express from 'express';
+import express, {Request, Response} from 'express';
 import {FileService} from '../service/FileService';
 import verifyToken from "../middleware/token";
 import Validator from "../middleware/validator";
@@ -18,7 +18,7 @@ const fileService  = new FileService();
 router.post('/file/upload/new',
     verifyToken,
     Validator.classValidator(UploadFileDTO),
-    async (req, res) => {
+    async (req : Request, res: Response) => {
 
     try {
         const uploadFileDTO: UploadFileDTO = req.body;
@@ -38,7 +38,7 @@ router.post('/file/upload/new',
 router.delete('/file/delete',
     verifyToken,
     Validator.classValidator(DeleteFileRequestDTO),
-    async (req, res) => {
+    async (req: Request, res: Response) => {
 
     try {
         const payload: DeleteFileRequestDTO = req.body;

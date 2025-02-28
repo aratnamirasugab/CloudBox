@@ -1,63 +1,42 @@
-import express from 'express';
+import express, {Request, Response} from 'express';
 import Validator from "../middleware/validator";
-import {
-    CreateFolderDTO,
-    CreateFolderResponse,
-    DeleteFolderRequestDTO,
-    DeleteFolderResponseDTO,
-    Folder,
-    UpdateFolderDTO,
-    ViewFolderDTO,
-    ViewFolderResponse
-} from "../database/model/Folder";
+import {DeleteFolderRequestDTO, DeleteFolderResponseDTO, UpdateFolderDTO} from "../database/model/Folder";
 import ResponseHandler from "../utils/ResponseHandler";
 import verifyToken from "../middleware/token";
 import Authentication from "../model/Authentication";
-import {FolderRepository} from "../database/repositories/FolderRepository";
-import {FileRepository} from "../database/repositories/FileRepository";
-import {File} from "../database/model/File";
 import {FolderService} from "../service/FolderService";
+import {ViewFolderRequest} from "../model/ViewFolderRequest";
+import {ViewFolderResponse} from "../model/ViewFolderResponse";
+import {CreateFolderDTO} from "../model/CreateFolderRequest";
+import {CreateFolderResponse} from "../model/CreateFolderResponse";
 
 const router = express.Router();
 
 const folderService = new FolderService();
-
-const folderRepository = new FolderRepository();
-const fileRepository = new FileRepository();
 
 router.post('/folder/create',
     verifyToken,
     Validator.classValidator(CreateFolderDTO),
     async (req, res) => {
 
-    try {
-        const createFolderPayload: CreateFolderDTO = req.body;
-        const authenticated: Authentication = req.body.verify;
-        const folder: Folder = await folderRepository.createFolder(createFolderPayload, authenticated.userId);
-        return ResponseHandler.success(res, new CreateFolderResponse(folder));
-    } catch (error) {
-        console.error(error);
-        return ResponseHandler.error(res);
-    }
+    const createFolderPayload: CreateFolderDTO = req.body;
+    const authenticated: Authentication = req.body.verify;
+    const result: CreateFolderResponse = await folderService.createANewFolder(
+        createFolderPayload.parentFolderId, authenticated.userId, createFolderPayload.name);
+    return ResponseHandler.success(res, result);
 });
 
 router.get('/folder/view',
     verifyToken,
-    Validator.classValidator(ViewFolderDTO),
-    async (req, res) => {
+    Validator.classValidator(ViewFolderRequest),
+    async (req: Request, res: Response) => {
 
-    try {
-        const payload: ViewFolderDTO = req.body;
-        const authenticated: Authentication = req.body.verify;
-
-        const files: File[]  = await fileRepository.getFilesWithFolderId(payload.folderId, authenticated.userId);
-        const folders: Folder[] = await folderRepository.getFoldersByParentFolderId(
-            payload.folderId, authenticated.userId);
-        return ResponseHandler.success(res, new ViewFolderResponse(folders, files));
-    } catch (error) {
-        console.error(error);
-        return ResponseHandler.error(res);
-    }
+    const payload: ViewFolderRequest = req.body;
+    const authenticated: Authentication = req.body.verify;
+    const fileFolderResult: ViewFolderResponse = await folderService.getFolderViewByFolderId(
+        payload.folderId, authenticated.userId
+    );
+    return ResponseHandler.success(res, fileFolderResult);
 })
 
 router.patch('/folder/update', 

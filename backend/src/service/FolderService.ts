@@ -7,6 +7,9 @@ import {CreateFolderTrashPayload} from "../model/CreateFolderTrashPayload";
 import {FileTrashRepository} from "../database/repositories/FileTrashRepository";
 import {CreateFileTrashPayload} from "../model/CreateFileTrashPayload";
 import {File} from "../database/model/File";
+import {FileResponseDTO, FolderResponseDTO, ViewFolderResponse} from "../model/ViewFolderResponse";
+import {plainToInstance} from "class-transformer";
+import {CreateFolderResponse} from "../model/CreateFolderResponse";
 
 const folderRepository = new FolderRepository();
 const fileRepository = new FileRepository();
@@ -113,4 +116,58 @@ export class FolderService {
             throw new Error('Internal Server Error');
         }
     }
+
+    async getFolderViewByFolderId(folderId: number | undefined,  userId: number): Promise<ViewFolderResponse> {
+
+        if (!userId || userId <= 0) {
+            throw new Error("Invalid Token");
+        }
+
+        try {
+            // Fetch files and folders concurrently for performance
+            type FolderViewResult = File[] | Folder[];
+            const promises: Promise<FolderViewResult>[] = [
+                fileRepository.getFilesWithFolderId(folderId, userId),
+                folderRepository.getFoldersByParentFolderId(folderId, userId)
+            ];
+
+            const result = await Promise.all(promises);
+
+            const files = result[0] as File[];
+            const folders = result[1] as Folder[];
+
+            const filteredFiles: FileResponseDTO[] = files?.length
+                ? plainToInstance(FileResponseDTO, files, { excludeExtraneousValues: true })
+                : [];
+
+            const filteredFolders: FolderResponseDTO[] = folders?.length
+                ? plainToInstance(FolderResponseDTO, folders, { excludeExtraneousValues: true })
+                : [];
+
+            return new ViewFolderResponse(filteredFolders, filteredFiles);
+        } catch (error) {
+            console.error(`Failed to fetch folder view for folderId: ${folderId}, userId: ${userId}`, error);
+            throw new Error('Unable to retrieve folder view');
+        }
+    }
+
+    async createANewFolder(rootFolderId: number | undefined, userId: number, folderName: string = "A New Folder") {
+
+        if (!userId || userId <= 0) {
+            throw new Error("Invalid Token");
+        }
+
+        try {
+            const folder: Folder = await folderRepository.createFolder(rootFolderId, folderName, userId);
+            if (!folder) {
+                throw new Error('Failed when executing creat folder method');
+            }
+
+            return new CreateFolderResponse("Folder created", folder.parentFolderId, folder.id);
+        } catch (error) {
+            console.error(`Failed to create new folder for userId: ${userId} . rootFolderId: ${rootFolderId} .`, error);
+            throw new Error('Unable to create new folder');
+        }
+    }
+
 }

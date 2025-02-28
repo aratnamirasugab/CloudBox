@@ -5,7 +5,7 @@ export class UserRepository {
         return await User.findOne({
             where: {
                 email: email
-            }, rejectOnEmpty: undefined
+            }
         })
     }
 
