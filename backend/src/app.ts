@@ -50,9 +50,6 @@ app.use((err: Error, req, res, next: NextFunction) => {
         case 'Validation failed':
             statusCode = 400;
             break;
-        case 'Folder not found':
-            statusCode = 404;
-            break;
         case 'Unauthorized':
             statusCode = 403;
             message = 'You are not authorized to perform this action';
@@ -65,11 +62,6 @@ app.use((err: Error, req, res, next: NextFunction) => {
     }
 
     ResponseHandler.error(res, message, statusCode, err);
-});
-
-process.on('unhandledRejection', (reason, promise) => {
-    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
-    // Don’t exit—let Express handle it if possible
 });
 
 const PORT: number = config.port as number;
