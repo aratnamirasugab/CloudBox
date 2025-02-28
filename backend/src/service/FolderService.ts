@@ -1,4 +1,4 @@
-import {DeleteFolderResponseDTO, Folder, UpdateFolderDTO} from "../database/model/Folder";
+import {Folder} from "../database/model/Folder";
 import {FolderRepository} from "../database/repositories/FolderRepository";
 import {FileRepository} from "../database/repositories/FileRepository";
 import {Transaction} from "sequelize";
@@ -10,6 +10,9 @@ import {File} from "../database/model/File";
 import {FileResponseDTO, FolderResponseDTO, ViewFolderResponse} from "../model/ViewFolderResponse";
 import {plainToInstance} from "class-transformer";
 import {CreateFolderResponse} from "../model/CreateFolderResponse";
+import {UpdateFolderRequest} from "../model/UpdateFolderRequest";
+import {UpdateFolderResponse} from "../model/UpdateFolderResponse";
+import {DeleteFolderResponse} from "../model/DeleteFolderResponse";
 
 const folderRepository = new FolderRepository();
 const fileRepository = new FileRepository();
@@ -18,16 +21,21 @@ const fileTrashRepository = new FileTrashRepository();
 
 export class FolderService {
 
-    async updateFolderByFolderId(payload: UpdateFolderDTO, userId: number): Promise<void> {
+    async updateFolderByFolderId(payload: UpdateFolderRequest, userId: number): Promise<UpdateFolderResponse> {
         const folder: Folder = await folderRepository.getFolderById(payload.folderId);
         if (!folder) {
             console.warn(`Folder is not found ${payload.folderId}`);
-            throw new Error('Internal Server Error');
+            throw new Error('Folder not found');
         }
 
         if (userId !== folder.userId) {
-            console.warn(`User id ${userId} trying to change folder Id ${folder.id}`);
-            throw new Error('Internal Server Error');
+            console.warn(`Unauthorized update attempt by user ${userId} on folder ${payload.folderId}`);
+            throw new Error('Unauthorized');
+        }
+
+        if (folder.parentFolderId !== payload.parentFolderId) {
+            console.warn(`Unauthorized update attempt by parentFolderId ${payload.parentFolderId} by user ${userId} on folder ${payload.folderId}`);
+            throw new Error('Unauthorized');
         }
 
         const [affectedCount] = await folderRepository.updateFolderByFolderId(payload, userId);
@@ -35,6 +43,8 @@ export class FolderService {
             console.warn(`Folder is not updated properly ${folder.id}`);
             throw new Error('Internal Server Error');
         }
+
+        return new UpdateFolderResponse(true, affectedCount);
     }
 
     async getFolderByKey(key: string, userId: number): Promise<Folder[]> {
@@ -46,7 +56,7 @@ export class FolderService {
         return await folderRepository.getFolderByKey(key, userId);
     }
 
-    async deleteFolderById(folderId: number, userId: number): Promise<DeleteFolderResponseDTO> {
+    async deleteFolderById(folderId: number, userId: number): Promise<DeleteFolderResponse> {
         const transaction: Transaction = await Folder.sequelize.transaction();
         try {
             // Fetch all subfolders in one query
@@ -71,7 +81,7 @@ export class FolderService {
                 await folderRepository.deleteFoldersWithIds([folderId], userId, transaction);
     
                 await transaction.commit();
-                return new DeleteFolderResponseDTO(1, deletedFileCount);
+                return new DeleteFolderResponse(1, deletedFileCount);
             }
     
             // Fetch all files in subfolders in one query
@@ -106,7 +116,7 @@ export class FolderService {
     
             // Commit transaction
             await transaction.commit();
-            return new DeleteFolderResponseDTO(deletedFoldersCount, deletedFilesCount);
+            return new DeleteFolderResponse(deletedFoldersCount, deletedFilesCount);
     
         } catch (error) {
             console.error(`Transaction failed for folderId: ${folderId}, userId: ${userId}. Error: `, error);

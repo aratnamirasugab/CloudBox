@@ -37,12 +37,39 @@ app.use('/api', FileRoutes, FolderRoutes, UserRoutes, UploadChunkRoutes, SearchR
 
 // Centralized error-handling middleware
 app.use((err: Error, req, res, next: NextFunction) => {
-    let statusCode = 500;
-    if (err.message === 'A token is required for authentication') statusCode = 403;
-    else if (err.message === 'Invalid Token') statusCode = 401;
-    else if (err.message === 'Validation failed') statusCode = 400;
+    let statusCode: number;
+    let message = err.message || 'Something went wrong';
 
-    ResponseHandler.error(res, err.message, statusCode, err);
+    switch (err.message) {
+        case 'A token is required for authentication':
+            statusCode = 403;
+            break;
+        case 'Invalid Token':
+            statusCode = 401;
+            break;
+        case 'Validation failed':
+            statusCode = 400;
+            break;
+        case 'Folder not found':
+            statusCode = 404;
+            break;
+        case 'Unauthorized':
+            statusCode = 403;
+            message = 'You are not authorized to perform this action';
+            break;
+        case 'Internal Server Error':
+            statusCode = 500;
+            break;
+        default:
+            statusCode = 500;
+    }
+
+    ResponseHandler.error(res, message, statusCode, err);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+    // Don’t exit—let Express handle it if possible
 });
 
 const PORT: number = config.port as number;

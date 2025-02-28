@@ -1,5 +1,6 @@
-import {Folder, UpdateFolderDTO} from "../model/Folder";
+import {Folder} from "../model/Folder";
 import {Op, QueryTypes, Transaction} from "sequelize";
+import {UpdateFolderRequest} from "../../model/UpdateFolderRequest";
 
 export class FolderRepository {
     async getFolderById(id: number): Promise<Folder> {
@@ -28,13 +29,28 @@ export class FolderRepository {
         })
     }
 
-    async updateFolderByFolderId(payload: UpdateFolderDTO, userId: number): Promise<[number]> {
-        return await Folder.update({
-                ...(payload.name !== undefined && { name: payload.name } ),
-                ...(payload.parentFolderId !== undefined && { parentFolderId : payload.parentFolderId })
-            }, { returning: false, where: { id: payload.folderId, userId: userId} }
-        )
+    async updateFolderByFolderId(
+        payload: UpdateFolderRequest,
+        userId: number
+    ): Promise<[number]> {
+        const updates: Partial<Folder> = {};
+        if (payload.name !== undefined) updates.name = payload.name;
+        if (payload.parentFolderId !== undefined) updates.parentFolderId = payload.parentFolderId;
+
+        if (Object.keys(updates).length === 0) {
+            throw new Error('No valid fields provided for update');
+        }
+
+        return await Folder.update(updates, {
+            where: {
+                id: payload.folderId,
+                userId: userId
+            },
+            returning: false
+        });
     }
+
+
 
     async getFolderByKey(key: string, userId: number): Promise<Folder[]> {
         return await Folder.findAll({

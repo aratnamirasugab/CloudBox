@@ -1,6 +1,5 @@
-import express, {Request, Response} from 'express';
+import express, {NextFunction, Request, Response} from 'express';
 import Validator from "../middleware/validator";
-import {DeleteFolderRequestDTO, DeleteFolderResponseDTO, UpdateFolderDTO} from "../database/model/Folder";
 import ResponseHandler from "../utils/ResponseHandler";
 import verifyToken from "../middleware/token";
 import Authentication from "../model/Authentication";
@@ -9,6 +8,10 @@ import {ViewFolderRequest} from "../model/ViewFolderRequest";
 import {ViewFolderResponse} from "../model/ViewFolderResponse";
 import {CreateFolderDTO} from "../model/CreateFolderRequest";
 import {CreateFolderResponse} from "../model/CreateFolderResponse";
+import {UpdateFolderRequest} from "../model/UpdateFolderRequest";
+import {UpdateFolderResponse} from "../model/UpdateFolderResponse";
+import {DeleteFolderRequest} from "../model/DeleteFolderRequest";
+import {DeleteFolderResponse} from "../model/DeleteFolderResponse";
 
 const router = express.Router();
 
@@ -17,56 +20,67 @@ const folderService = new FolderService();
 router.post('/folder/create',
     verifyToken,
     Validator.classValidator(CreateFolderDTO),
-    async (req, res) => {
+    async (req, res, next: NextFunction) => {
 
-    const createFolderPayload: CreateFolderDTO = req.body;
-    const authenticated: Authentication = req.body.verify;
-    const result: CreateFolderResponse = await folderService.createANewFolder(
-        createFolderPayload.parentFolderId, authenticated.userId, createFolderPayload.name);
-    return ResponseHandler.success(res, result);
+    try {
+        const createFolderPayload: CreateFolderDTO = req.body;
+        const authenticated: Authentication = req.body.verify;
+        const result: CreateFolderResponse = await folderService.createANewFolder(
+            createFolderPayload.parentFolderId, authenticated.userId, createFolderPayload.name);
+        return ResponseHandler.success(res, result);
+    } catch (e) {
+        next(e);
+    }
 });
 
 router.get('/folder/view',
     verifyToken,
     Validator.classValidator(ViewFolderRequest),
-    async (req: Request, res: Response) => {
+    async (req: Request, res: Response, next: NextFunction) => {
 
-    const payload: ViewFolderRequest = req.body;
-    const authenticated: Authentication = req.body.verify;
-    const fileFolderResult: ViewFolderResponse = await folderService.getFolderViewByFolderId(
-        payload.folderId, authenticated.userId
-    );
-    return ResponseHandler.success(res, fileFolderResult);
+    try {
+        const payload: ViewFolderRequest = req.body;
+        const authenticated: Authentication = req.body.verify;
+        const fileFolderResult: ViewFolderResponse = await folderService.getFolderViewByFolderId(
+            payload.folderId, authenticated.userId
+        );
+        return ResponseHandler.success(res, fileFolderResult);
+    } catch (e) {
+        next(e);
+    }
 })
 
 router.patch('/folder/update', 
     verifyToken, 
-    Validator.classValidator(UpdateFolderDTO),
-    async (req, res) => {
+    Validator.classValidator(UpdateFolderRequest),
+    async (req, res, next: NextFunction) => {
 
     try {
-        const payload: UpdateFolderDTO = req.body;
+        const payload: UpdateFolderRequest = req.body;
         const authenticated: Authentication = req.body.verify;
 
-        await folderService.updateFolderByFolderId(payload, authenticated.userId);
-        return ResponseHandler.success(res);
-    } catch (error) {
-        return ResponseHandler.error(error);
+        const result: UpdateFolderResponse = await folderService.updateFolderByFolderId(payload, authenticated.userId);
+        return ResponseHandler.success(res, result);
+    } catch (e) {
+        next(e);
     }
 })
 
-router.delete('/folder/delete', verifyToken, Validator.classValidator(DeleteFolderRequestDTO), async (req, res) => {
+router.delete('/folder/delete',
+    verifyToken,
+    Validator.classValidator(DeleteFolderRequest),
+    async (req, res, next: NextFunction) => {
+
     try {
         const authenticated: Authentication = req.body.verify;
-        const payload: DeleteFolderRequestDTO = req.body;
+        const payload: DeleteFolderRequest = req.body;
 
-        const filteredResponse: DeleteFolderResponseDTO = await folderService.deleteFolderById(
+        const filteredResponse: DeleteFolderResponse = await folderService.deleteFolderById(
             payload.folderId, authenticated.userId
         );
         return ResponseHandler.success(res, filteredResponse);
-    } catch (error) {
-        console.error()
-        return ResponseHandler.error(res);
+    } catch (e) {
+        next(e);
     }
 })
 
